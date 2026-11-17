@@ -1,3 +1,6 @@
+import { UN_LANGUAGES } from './i18n.js';
+import { initVolcanoSky } from './volcano-sky.js';
+
 // 1. Conditional polyfills (loaded ONLY when native browser support is absent)
 if (!('commandForElement' in HTMLButtonElement.prototype)) {
   import('https://esm.run/invokers-polyfill').catch(() => {});
@@ -13,11 +16,15 @@ if (!Object.hasOwn(HTMLElement.prototype, 'focusGroup')) {
 if (!CSS.supports('animation-timeline', 'scroll()')) {
   const progress = document.querySelector('#scroll-progress');
   if (progress) {
-    window.addEventListener('scroll', () => {
-      const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const ratio = Math.min(1, Math.max(0, window.scrollY / scrollable));
-      progress.style.transform = `scaleX(${ratio})`;
-    }, { passive: true });
+    window.addEventListener(
+      'scroll',
+      () => {
+        const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const ratio = Math.min(1, Math.max(0, window.scrollY / scrollable));
+        progress.style.transform = `scaleX(${ratio})`;
+      },
+      { passive: true }
+    );
   }
 }
 
@@ -39,7 +46,14 @@ if (
   document.querySelectorAll('.reveal-card').forEach((el) => revealObserver.observe(el));
 }
 
-// 4. Copy Button Invoker Command (--copy) + VoiceOver repeat-announcement fix
+// 4. Active UN Language State (English default)
+let currentLang = 'en';
+
+function getPack() {
+  return UN_LANGUAGES[currentLang] || UN_LANGUAGES.en;
+}
+
+// 5. Copy Button Invoker Command (--copy) + VoiceOver repeat-announcement fix
 const copyTimers = new WeakMap();
 let lastCopyAnnouncement = '';
 
@@ -62,10 +76,8 @@ function reportCopy(button, ok) {
   clearTimeout(copyTimers.get(button));
   button.removeAttribute('data-copied');
   button.removeAttribute('data-failed');
-  const lang = document.documentElement.lang === 'en' ? 'en' : 'ru';
-  let message = ok
-    ? (lang === 'en' ? 'Copied' : 'Скопировано')
-    : (lang === 'en' ? 'Copy failed' : 'Ошибка');
+  const pack = getPack();
+  let message = ok ? pack.copied : pack.copyFailed;
   if (message === lastCopyAnnouncement) message += '\u00A0';
   lastCopyAnnouncement = message;
 
@@ -93,11 +105,7 @@ async function copyTarget(button, target) {
     await navigator.clipboard.writeText(text);
     reportCopy(button, true);
   } catch {
-    if (legacyCopy(text)) {
-      reportCopy(button, true);
-    } else {
-      reportCopy(button, false);
-    }
+    reportCopy(button, legacyCopy(text));
   }
 }
 
@@ -120,7 +128,7 @@ if ('CommandEvent' in window) {
   });
 }
 
-// 5. Accordion Expand/Collapse All (--toggle-all) + aria-expanded sync
+// 6. Accordion Expand/Collapse All (--toggle-all) + aria-expanded sync
 function toggleAllAccordion(button, accordion) {
   if (!button || !accordion) return;
   const expand = button.getAttribute('aria-expanded') !== 'true';
@@ -164,7 +172,7 @@ document.addEventListener(
   { capture: true }
 );
 
-// 6. Top-layer <dialog closedby="any"> exit transition & light-dismiss fallbacks
+// 7. Top-layer <dialog closedby="any"> exit transition & light-dismiss fallbacks
 let supportsDisplayTransition;
 function canTransitionDisplay() {
   if (supportsDisplayTransition !== undefined) return supportsDisplayTransition;
@@ -231,7 +239,7 @@ for (const dialog of document.querySelectorAll('dialog')) {
   }
 }
 
-// 7. Two-state Theme Toggle (<meta name="color-scheme"> + localStorage, no retroactive wipe)
+// 8. Theme Scheme Management + Basalt Volcano Sunrise / Sunset Engine
 const schemeMeta = document.querySelector('meta[name="color-scheme"]');
 const themeBtn = document.getElementById('theme-toggle');
 
@@ -242,51 +250,68 @@ function currentlyRenderedDark() {
   return matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-themeBtn?.addEventListener('click', () => {
+function applyColorScheme(targetScheme, persistOverride = true) {
   const systemDark = matchMedia('(prefers-color-scheme: dark)').matches;
-  const targetScheme = currentlyRenderedDark() ? 'light' : 'dark';
   const targetIsSystem = (targetScheme === 'dark') === systemDark;
 
-  const apply = () => {
-    if (targetIsSystem) {
-      try { localStorage.removeItem('color-scheme'); } catch {}
-      if (schemeMeta) schemeMeta.content = 'light dark';
-    } else {
-      try { localStorage.setItem('color-scheme', targetScheme); } catch {}
-      if (schemeMeta) schemeMeta.content = targetScheme;
+  const mutate = () => {
+    if (persistOverride) {
+      if (targetIsSystem) {
+        try { localStorage.removeItem('color-scheme'); } catch {}
+        if (schemeMeta) schemeMeta.content = 'light dark';
+      } else {
+        try { localStorage.setItem('color-scheme', targetScheme); } catch {}
+        if (schemeMeta) schemeMeta.content = targetScheme;
+      }
+    } else if (schemeMeta) {
+      schemeMeta.content = targetIsSystem ? 'light dark' : targetScheme;
     }
   };
 
   if (document.startViewTransition && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    document.startViewTransition(apply);
+    document.startViewTransition(mutate);
   } else {
-    apply();
+    mutate();
+  }
+}
+
+const volcanoSky = initVolcanoSky({
+  isDarkScheme: currentlyRenderedDark,
+  setScheme: applyColorScheme,
+});
+
+themeBtn?.addEventListener('click', () => {
+  const targetScheme = currentlyRenderedDark() ? 'light' : 'dark';
+  if (volcanoSky) {
+    volcanoSky.transitionToScheme(targetScheme, true);
+  } else {
+    applyColorScheme(targetScheme, true);
   }
 });
 
 window.addEventListener('storage', (event) => {
   if (event.key === 'color-scheme' && schemeMeta) {
     schemeMeta.content = event.newValue ?? 'light dark';
+    volcanoSky?.syncImmediateScheme();
   }
 });
 
-// 8. WCAG 2.2.2 Pause / Play Motion Control (no aria-pressed since label changes)
+// 9. WCAG 2.2.2 Pause / Play Motion Control (no aria-pressed since label changes)
 const motionBtn = document.getElementById('motion-toggle');
 function syncMotionLabel() {
   if (!motionBtn) return;
   const paused = document.body.hasAttribute('data-motion-paused');
-  const en = document.documentElement.lang === 'en';
-  motionBtn.textContent = paused
-    ? (en ? '▶ Play motion' : '▶ Анимация')
-    : (en ? '⏸ Pause motion' : '⏸ Пауза');
+  const pack = getPack();
+  motionBtn.textContent = paused ? pack.playMotion : pack.pauseMotion;
 }
 
 motionBtn?.addEventListener('click', () => {
   document.body.toggleAttribute('data-motion-paused');
   syncMotionLabel();
+  volcanoSky?.syncMotionState();
 });
 
-// 9. Accessible Tabbed 84 Compose Profiles Explorer (selection follows focus + hidden="until-found")
+// 10. Accessible Tabbed 84 Compose Profiles Explorer (selection follows focus + hidden="until-found")
 for (const container of document.querySelectorAll('.tabs-shell')) {
   const tablist = container.querySelector('[focusgroup]');
   if (!tablist) continue;
@@ -304,7 +329,9 @@ for (const container of document.querySelectorAll('.tabs-shell')) {
       e.preventDefault();
       const cur = tabs.indexOf(document.activeElement);
       if (cur < 0) return;
-      const next = tabs[(cur + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      const isRtl = document.documentElement.dir === 'rtl';
+      const forward = isRtl ? e.key === 'ArrowLeft' : e.key === 'ArrowRight';
+      const next = tabs[(cur + (forward ? 1 : tabs.length - 1)) % tabs.length];
       next.focus();
     });
   }
@@ -348,28 +375,72 @@ for (const container of document.querySelectorAll('.tabs-shell')) {
   });
 }
 
-// 10. Bilingual RU / EN Instant Switcher with View Transitions
-const langBtn = document.getElementById('lang-toggle');
+// 11. UN Official Languages Switcher (English Default + Flag Picker + RTL + View Transitions)
+const langSelect = document.getElementById('lang-select');
 
-function applyLanguage(lang) {
+function applyLanguage(code) {
+  const lang = UN_LANGUAGES[code] ? code : 'en';
+  currentLang = lang;
+  const pack = UN_LANGUAGES[lang];
+
   document.documentElement.lang = lang;
-  document.querySelectorAll('[data-ru][data-en]').forEach((el) => {
-    el.textContent = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-ru');
+  document.documentElement.dir = pack.dir;
+  document.title = pack.title;
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    if (key && pack.strings[key]) {
+      el.textContent = pack.strings[key];
+    }
   });
-  document.querySelectorAll('[data-aria-ru][data-aria-en]').forEach((el) => {
-    el.setAttribute('aria-label', lang === 'en' ? el.getAttribute('data-aria-en') : el.getAttribute('data-aria-ru'));
+
+  document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-aria');
+    if (key && pack.strings[key]) {
+      el.setAttribute('aria-label', pack.strings[key]);
+    }
   });
-  if (langBtn) langBtn.textContent = lang === 'en' ? 'RU' : 'EN';
+
+  document.querySelectorAll('[data-i18n-alt]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-alt');
+    if (key && pack.strings[key]) {
+      el.setAttribute('alt', pack.strings[key]);
+    }
+  });
+
+  if (langSelect && langSelect.value !== lang) {
+    langSelect.value = lang;
+  }
+
   syncMotionLabel();
 }
 
-langBtn?.addEventListener('click', () => {
-  const next = document.documentElement.lang === 'en' ? 'ru' : 'en';
-  if (document.startViewTransition && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    document.startViewTransition(() => applyLanguage(next));
-  } else {
+langSelect?.addEventListener('change', () => {
+  const next = langSelect.value;
+  try {
+    if (next === 'en') localStorage.removeItem('basalt-lang');
+    else localStorage.setItem('basalt-lang', next);
+  } catch {}
+
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
     applyLanguage(next);
+    return;
   }
+  const transition = document.startViewTransition(() => applyLanguage(next));
+  transition.finished.finally(() => {
+    langSelect.focus({ preventScroll: true });
+  });
 });
 
-syncMotionLabel();
+// Initialize language: strictly English ('en') by default unless user explicitly chose another UN language earlier
+let initialLang = 'en';
+try {
+  const saved = localStorage.getItem('basalt-lang');
+  if (saved && UN_LANGUAGES[saved]) initialLang = saved;
+} catch {}
+
+if (initialLang !== 'en') {
+  applyLanguage(initialLang);
+} else {
+  syncMotionLabel();
+}

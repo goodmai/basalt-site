@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,22 +11,21 @@
         localStorage.getItem('color-scheme') ?? 'light dark';
     } catch {}
   </script>
-  <title>Basalt v0.11.0 — Теперь ваш Mac и есть AI-лаборатория · Apple Silicon MLX &amp; ANE</title>
-  <meta name="description" content="Basalt v0.11.0: нативный Swift 6.4 сервер инференса (OpenAI, Anthropic, MCP), квантование QTIP/PV-Tuning, 44.1 kHz TTS ZONOS3-Mini, 84 профиля Compose по ОЗУ и приложение Basalt.app для macOS 27 Liquid Glass.">
+  <title>Basalt v0.11.0 — Your Mac Is the AI Lab Now · Apple Silicon MLX &amp; ANE</title>
+  <meta name="description" content="Basalt v0.11.0: native Swift 6.4 inference server (OpenAI, Anthropic, MCP), QTIP/PV-Tuning quantization, Meta Muse Glimmer 30B, ZONOS3-Mini 44.1 kHz TTS, 84 RAM-calibrated Compose profiles, and macOS 27 Liquid Glass app.">
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main" data-ru="Перейти к содержимому" data-en="Skip to main content">Перейти к содержимому</a>
+  <a class="skip-link" href="#hero-heading" data-i18n="skip_link">Skip to main content</a>
 
   <!-- Decorative scroll progress bar (empty element, compositor scaleX) -->
   <div id="scroll-progress"></div>
 
-  <!-- Pausable prismatic aurora stage -->
-  <div class="aurora-stage" aria-hidden="true">
-    <div class="aurora-orb orb-cobalt"></div>
-    <div class="aurora-orb orb-violet"></div>
-    <div class="aurora-orb orb-amber"></div>
+  <!-- Zero-jank Basalt volcano, cooling lava, night meteorite (1m), comet (5m) & sunrise/sunset (10m) -->
+  <div class="volcano-stage" aria-hidden="true">
+    <canvas id="volcano-canvas" width="1280" height="720"></canvas>
+    <div class="twilight-veil"></div>
   </div>
 
   <header class="site-header">
@@ -37,21 +36,77 @@
         <span class="version-pill">v0.11.0</span>
       </a>
 
-      <nav class="nav-links" aria-label="Основная навигация" data-aria-ru="Основная навигация" data-aria-en="Primary navigation">
-        <a href="#features" data-ru="Возможности" data-en="Capabilities">Возможности</a>
-        <a href="#compose" data-ru="84 профиля Compose" data-en="84 Compose Profiles">84 профиля Compose</a>
-        <a href="#mac-app" data-ru="Basalt для Mac" data-en="Basalt for Mac">Basalt для Mac</a>
-        <a href="#models" data-ru="Модели HF (42+)" data-en="HF Models (42+)">Модели HF (42+)</a>
-        <a href="#docs" data-ru="Документация" data-en="Documentation">Документация</a>
+      <nav class="nav-links" aria-label="Primary" data-i18n-aria="nav_label">
+        <a href="#features" data-i18n="nav_features">Capabilities</a>
+        <a href="#compose" data-i18n="nav_compose">84 Compose Profiles</a>
+        <a href="#mac-app" data-i18n="nav_mac">Basalt for Mac</a>
+        <a href="#models" data-i18n="nav_models">HF Models (42+)</a>
+        <a href="#docs" data-i18n="nav_docs">Documentation</a>
       </nav>
 
       <div class="header-controls">
         <!-- WCAG 2.2.2 Pause/Play control for continuous animations (no aria-pressed because label changes) -->
-        <button type="button" class="icon-control" id="motion-toggle">⏸ Пауза</button>
-        <button type="button" class="icon-control" id="lang-toggle" aria-label="Switch language to English" data-aria-ru="Переключить язык на английский" data-aria-en="Switch language to Russian">EN</button>
+        <button type="button" class="icon-control" id="motion-toggle">⏸ Pause motion</button>
+
+        <!-- UN Official Languages Select Picker (appearance: base-select + SVG flags + native fallback) -->
+        <label for="lang-select" class="visually-hidden" data-i18n="lang_label">Language</label>
+        <select id="lang-select" class="lang-select" name="lang">
+          <button type="button">
+            <selectedcontent></selectedcontent>
+          </button>
+          <option value="en" lang="en" selected>
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="16" fill="#012169"/>
+              <path d="M0 0L24 16M24 0L0 16" stroke="#fff" stroke-width="3"/>
+              <path d="M0 0L24 16M24 0L0 16" stroke="#C8102E" stroke-width="1.5"/>
+              <path d="M12 0V16M0 8H24" stroke="#fff" stroke-width="5"/>
+              <path d="M12 0V16M0 8H24" stroke="#C8102E" stroke-width="3"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇬🇧 </span>English
+          </option>
+          <option value="fr" lang="fr">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="8" height="16" fill="#002395"/>
+              <rect x="8" width="8" height="16" fill="#ffffff"/>
+              <rect x="16" width="8" height="16" fill="#ED2939"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇫🇷 </span>Français
+          </option>
+          <option value="es" lang="es">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="16" fill="#AA151B"/>
+              <rect y="4" width="24" height="8" fill="#F1BF00"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇪🇸 </span>Español
+          </option>
+          <option value="ru" lang="ru">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="5.34" fill="#ffffff"/>
+              <rect y="5.33" width="24" height="5.34" fill="#0039A6"/>
+              <rect y="10.66" width="24" height="5.34" fill="#D52B1E"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇷🇺 </span>Русский
+          </option>
+          <option value="zh" lang="zh">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="16" fill="#DE2910"/>
+              <polygon points="5,2.2 5.9,4.9 8.7,4.9 6.4,6.6 7.3,9.3 5,7.6 2.7,9.3 3.6,6.6 1.3,4.9 4.1,4.9" fill="#FFDE00"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇨🇳 </span>中文
+          </option>
+          <option value="ar" lang="ar">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="16" fill="#006C35"/>
+              <rect x="5" y="10.5" width="14" height="1.6" rx="0.8" fill="#ffffff"/>
+              <rect x="7" y="5.5" width="10" height="2.2" rx="1" fill="#ffffff"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇸🇦 </span>العربية
+          </option>
+        </select>
+
         <button type="button" class="icon-control" id="theme-toggle">
-          <span class="theme-label-dark"><span aria-hidden="true">🌙</span> <span class="sr-only" data-ru="Включить тёмную тему" data-en="Switch to dark theme">Включить тёмную тему</span></span>
-          <span class="theme-label-light"><span aria-hidden="true">☀️</span> <span class="sr-only" data-ru="Включить светлую тему" data-en="Switch to light theme">Включить светлую тему</span></span>
+          <span class="theme-label-dark"><span aria-hidden="true">🌙</span> <span class="sr-only" data-i18n="theme_to_dark">Switch to dark theme</span></span>
+          <span class="theme-label-light"><span aria-hidden="true">☀️</span> <span class="sr-only" data-i18n="theme_to_light">Switch to light theme</span></span>
         </button>
         <a class="icon-control" href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener">🤗 HF</a>
         <a class="icon-control" href="https://github.com/goodmai/basalt" target="_blank" rel="noopener">⭐ GitHub</a>
@@ -69,49 +124,49 @@
           <div class="eyebrow-row">
             <a class="eyebrow-badge" href="https://github.com/goodmai/basalt/releases/tag/v0.11.0" target="_blank" rel="noopener">
               <span aria-hidden="true">🚀</span>
-              <span data-ru="Релиз v0.11.0 · Swift 6.4 · macOS 27+" data-en="Release v0.11.0 · Swift 6.4 · macOS 27+">Релиз v0.11.0 · Swift 6.4 · macOS 27+</span>
+              <span data-i18n="badge_release">Release v0.11.0 · Swift 6.4 · macOS 27+</span>
             </a>
             <a class="eyebrow-badge" href="https://huggingface.co/goodmai" target="_blank" rel="noopener">
               <span aria-hidden="true">🤗</span>
-              <span data-ru="42+ проверенных MLX / ANE модели" data-en="42+ verified MLX / ANE models">42+ проверенных MLX / ANE модели</span>
+              <span data-i18n="badge_models">42+ verified MLX / ANE models</span>
             </a>
           </div>
 
-          <h1 class="hero-title">
-            <span data-ru="Теперь ваш Mac — и есть " data-en="Your Mac is the ">Теперь ваш Mac — и есть </span>
-            <span class="gradient-text" data-ru="AI-лаборатория." data-en="AI lab now.">AI-лаборатория.</span>
+          <h1 class="hero-title" id="hero-heading" tabindex="-1">
+            <span data-i18n="hero_title_1">Your Mac is the </span>
+            <span class="gradient-text" data-i18n="hero_title_2">AI lab now.</span>
           </h1>
 
-          <p class="hero-lead" data-ru="Запускайте, обучайте, квантуйте, собирайте в многомодельные системы и вскрывайте открытые LLM, речь 44.1 kHz, OCR и генерацию изображений на Apple Silicon. Один бинарник Swift 6.4 говорит на OpenAI API, Anthropic API и MCP, а сверху — нативное приложение macOS 27 Liquid Glass. Без Python в рантайме." data-en="Serve, train, quantize, compose and dissect open LLMs, 44.1 kHz neural speech, OCR and image synthesis on Apple Silicon. One Swift 6.4 binary speaks OpenAI API, Anthropic API and MCP with a native macOS 27 Liquid Glass app on top. Zero Python at runtime.">
-            Запускайте, обучайте, квантуйте, собирайте в многомодельные системы и вскрывайте открытые LLM, речь 44.1 kHz, OCR и генерацию изображений на Apple Silicon. Один бинарник Swift 6.4 говорит на OpenAI API, Anthropic API и MCP, а сверху — нативное приложение macOS 27 Liquid Glass. Без Python в рантайме.
+          <p class="hero-lead" data-i18n="hero_lead">
+            Serve, train, quantize, compose and dissect open LLMs, Meta Muse Glimmer 30B, 44.1 kHz neural speech, OCR and image synthesis on Apple Silicon. One Swift 6.4 binary speaks OpenAI API, Anthropic API and MCP with a native macOS 27 Liquid Glass app on top. Zero Python at runtime.
           </p>
 
           <div class="cta-group">
             <button type="button" class="btn btn-primary" commandfor="quickstart-dialog" command="show-modal">
               <span aria-hidden="true">⚡</span>
-              <span data-ru="Быстрый старт за 60 сек" data-en="60-Second Quickstart">Быстрый старт за 60 сек</span>
+              <span data-i18n="cta_quickstart">60-Second Quickstart</span>
             </button>
             <a class="btn btn-hf" href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener">
               <span aria-hidden="true">▶</span>
-              <span data-ru="Запустить с Hugging Face" data-en="Launch from Hugging Face">Запустить с Hugging Face</span>
+              <span data-i18n="cta_hf">Launch from Hugging Face</span>
             </a>
             <a class="btn" href="https://github.com/goodmai/basalt" target="_blank" rel="noopener">
               <span aria-hidden="true">⭐</span>
-              <span data-ru="Код и релизы на GitHub" data-en="Source & Releases on GitHub">Код и релизы на GitHub</span>
+              <span data-i18n="cta_github">Source &amp; Releases on GitHub</span>
             </a>
           </div>
 
           <div class="code-box copyable">
             <span class="copy">
-              <button type="button" class="copy-button" command="--copy" commandfor="hero-cmd" aria-label="Скопировать команды установки и запуска Claude Code" data-aria-ru="Скопировать команды установки и запуска Claude Code" data-aria-en="Copy install and Claude Code launch commands">
+              <button type="button" class="copy-button" command="--copy" commandfor="hero-cmd" aria-label="Copy install and Claude Code launch commands" data-i18n-aria="copy_hero_aria">
                 <span class="icon-copy" aria-hidden="true">⧉</span>
                 <span class="icon-check" aria-hidden="true">✓</span>
                 <span>Copy</span>
               </button>
               <span class="tip" role="status"></span>
             </span>
-            <pre><code id="hero-cmd">brew tap goodmai/basalt https://github.com/goodmai/basalt &amp;&amp; brew trust goodmai/basalt
-brew install goodmai/basalt/basalt
+            <pre><code id="hero-cmd">brew tap goodmai/basalt https://github.com/goodmai/basalt
+brew trust goodmai/basalt &amp;&amp; brew install goodmai/basalt/basalt
 basalt compose up 24gb-voice-zonos
 ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code></pre>
           </div>
@@ -120,12 +175,12 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
         <!-- Animated Unified Memory Bus + ZONOS3 44.1 kHz Waveform -->
         <div class="neural-card">
           <div class="neural-top">
-            <span data-ru="ЕДИНАЯ ПАМЯТЬ APPLE SILICON · ZERO-COPY" data-en="APPLE SILICON UNIFIED MEMORY · ZERO-COPY">ЕДИНАЯ ПАМЯТЬ APPLE SILICON · ZERO-COPY</span>
-            <span class="status-dot" data-ru="Metal + ANE активны" data-en="Metal + ANE active">Metal + ANE активны</span>
+            <span data-i18n="bus_header">APPLE SILICON UNIFIED MEMORY · ZERO-COPY</span>
+            <span class="status-dot" data-i18n="bus_status">Metal + ANE active</span>
           </div>
 
           <svg class="neural-svg" viewBox="0 0 460 230" role="img" aria-labelledby="svg-bus-title">
-            <title id="svg-bus-title">Архитектура Basalt: Metal GPU, Neural Engine, SSD AIO стриминг экспертов и ZONOS3 44.1 kHz аудиопоток</title>
+            <title id="svg-bus-title" data-i18n="bus_svg_title">Basalt architecture: Metal GPU, Neural Engine, POSIX AIO SSD expert streaming and ZONOS3 44.1 kHz audio bus</title>
             <defs>
               <linearGradient id="gradBus" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stop-color="#38bdf8"/>
@@ -133,34 +188,29 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
                 <stop offset="100%" stop-color="#fb923c"/>
               </linearGradient>
             </defs>
-            <!-- Animated Unified Bus Lines -->
             <path class="bus-flow" d="M 75 62 C 165 62, 165 115, 230 115" fill="none" stroke="url(#gradBus)" stroke-width="3"/>
             <path class="bus-flow" d="M 75 168 C 165 168, 165 115, 230 115" fill="none" stroke="url(#gradBus)" stroke-width="3"/>
             <path class="bus-flow" d="M 230 115 C 300 115, 300 62, 382 62" fill="none" stroke="url(#gradBus)" stroke-width="3"/>
             <path class="bus-flow" d="M 230 115 C 300 115, 300 168, 382 168" fill="none" stroke="url(#gradBus)" stroke-width="3"/>
 
-            <!-- Left Nodes -->
             <rect x="16" y="36" width="122" height="52" rx="12" fill="#131c31" stroke="#3b82f6" stroke-width="1.6"/>
             <text x="77" y="59" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="700">Metal GPU</text>
-            <text x="77" y="76" text-anchor="middle" fill="#7dd3fc" font-size="10">MLX · QTIP · IQ3_S</text>
+            <text x="77" y="76" text-anchor="middle" fill="#7dd3fc" font-size="10">MLX · QTIP · ATEM</text>
 
             <rect x="16" y="142" width="122" height="52" rx="12" fill="#131c31" stroke="#a855f7" stroke-width="1.6"/>
             <text x="77" y="165" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="700">Neural Engine</text>
             <text x="77" y="182" text-anchor="middle" fill="#d8b4fe" font-size="10">Laya 11ms · Kokoro</text>
 
-            <!-- Center Core -->
             <circle cx="230" cy="115" r="38" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
             <text x="230" y="112" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="800">BASALT</text>
             <text x="230" y="127" text-anchor="middle" fill="#34d399" font-size="9.5" font-weight="700">RawSpan</text>
 
-            <!-- Right Nodes -->
             <rect x="322" y="36" width="122" height="52" rx="12" fill="#131c31" stroke="#fb923c" stroke-width="1.6"/>
             <text x="383" y="59" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="700">POSIX AIO SSD</text>
             <text x="383" y="76" text-anchor="middle" fill="#fdba74" font-size="10">37.7 GB MoE · 0 Swap</text>
 
             <rect x="322" y="142" width="122" height="52" rx="12" fill="#131c31" stroke="#34d399" stroke-width="1.6"/>
             <text x="383" y="161" text-anchor="middle" fill="#e2e8f0" font-size="11.5" font-weight="700">ZONOS3 44.1 kHz</text>
-            <!-- Animated TTS waveform bars -->
             <g fill="#34d399">
               <rect class="wave-bar" x="345" y="168" width="4" height="16" rx="2"/>
               <rect class="wave-bar" x="354" y="166" width="4" height="20" rx="2"/>
@@ -177,19 +227,19 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
           <div class="hero-metrics">
             <div class="mini-metric">
               <strong style="color: var(--cobalt);">67.02 tok/s</strong>
-              <span data-ru="Flint 40B-A2.5B (oQ3e) в 17.6 GB" data-en="Flint 40B-A2.5B (oQ3e) in 17.6 GB">Flint 40B-A2.5B (oQ3e) в 17.6 GB</span>
+              <span data-i18n="metric_1">Flint 40B-A2.5B (oQ3e) in 17.6 GB</span>
             </div>
             <div class="mini-metric">
               <strong style="color: var(--emerald);">RTF 0.23 · 4.4×</strong>
-              <span data-ru="ZONOS3-Mini 44.1 kHz · 43 языка" data-en="ZONOS3-Mini 44.1 kHz · 43 languages">ZONOS3-Mini 44.1 kHz · 43 языка</span>
+              <span data-i18n="metric_2">ZONOS3-Mini 44.1 kHz · 43 languages</span>
             </div>
             <div class="mini-metric">
               <strong style="color: var(--amber);">8.77 tok/s · 0 Swap</strong>
-              <span data-ru="37.7 GB MoE со стримингом с SSD" data-en="37.7 GB MoE streamed from SSD">37.7 GB MoE со стримингом с SSD</span>
+              <span data-i18n="metric_3">37.7 GB MoE streamed from SSD</span>
             </div>
             <div class="mini-metric">
-              <strong style="color: var(--violet);">84 профиля</strong>
-              <span data-ru="Compose под 16–256 GB ОЗУ Mac" data-en="Compose stacks for 16–256 GB Macs">Compose под 16–256 GB ОЗУ Mac</span>
+              <strong style="color: var(--violet);">84 Profiles</strong>
+              <span data-i18n="metric_4">84 stacks for 16–256 GB Macs</span>
             </div>
           </div>
         </div>
@@ -202,16 +252,16 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
     <section id="features">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="ПЯТЬ ИНСТРУМЕНТОВ В ОДНОМ БИНАРНИКЕ" data-en="FIVE SYSTEMS IN ONE SWIFT 6.4 BINARY">ПЯТЬ ИНСТРУМЕНТОВ В ОДНОМ БИНАРНИКЕ</span>
-          <h2 class="section-title" data-ru="Сервер, квантование, мультимодальность, Compose и рентген модели" data-en="Inference, quantization, multimodal speech &amp; vision, Compose and Model X-Ray">Сервер, квантование, мультимодальность, Compose и рентген модели</h2>
-          <p class="section-sub" data-ru="Каждое ускорение проверено на эталонных логитах (GoldenLogitsTests) и реальных замерах на M4 Pro 24 GB." data-en="Every kernel and decode path is verified against reference logits (GoldenLogitsTests) and measured on Apple Silicon.">Каждое ускорение проверено на эталонных логитах (GoldenLogitsTests) и реальных замерах на M4 Pro 24 GB.</p>
+          <span class="section-kicker" data-i18n="feat_kicker">FIVE SYSTEMS IN ONE SWIFT 6.4 BINARY</span>
+          <h2 class="section-title" data-i18n="feat_title">Inference, quantization, multimodal speech &amp; vision, Compose and Model X-Ray</h2>
+          <p class="section-sub" data-i18n="feat_sub">Every kernel and decode path is verified against reference logits (GoldenLogitsTests) and measured on Apple Silicon.</p>
         </div>
 
         <div class="bento-grid">
           <article class="bento-card reveal-card" data-tone="cobalt">
             <span class="card-icon" aria-hidden="true">⚡</span>
-            <h3 data-ru="Сверхбыстрый инференс за привычными API" data-en="High-Speed Inference Behind Familiar APIs">Сверхбыстрый инференс за привычными API</h3>
-            <p data-ru="Claude Code, Cursor, OpenAI SDK, OpenCode и aider подключаются напрямую. Flint-40B-A2.5B выдаёт 67.02 tok/s, Bonsai 2 27B помещается в 7.4 GB (27.1 tok/s с MTP), а 37.7 GB MoE стримится с SSD через POSIX AIO LIO_NOWAIT без единого байта свопа." data-en="Connect Claude Code, Cursor, OpenAI SDKs, and aider in one line. Flint-40B-A2.5B decodes at 67.02 tok/s, Ternary Bonsai 2 27B runs in 7.4 GB, and 37.7 GB MoE checkpoints stream from SSD with 0 swap.">Claude Code, Cursor, OpenAI SDK, OpenCode и aider подключаются напрямую. Flint-40B-A2.5B выдаёт 67.02 tok/s, Bonsai 2 27B помещается в 7.4 GB (27.1 tok/s с MTP), а 37.7 GB MoE стримится с SSD через POSIX AIO LIO_NOWAIT без единого байта свопа.</p>
+            <h3 data-i18n="f1_title">High-Speed Inference Behind Familiar APIs</h3>
+            <p data-i18n="f1_desc">Connect Claude Code, Cursor, OpenAI SDKs, OpenCode and aider in one line. Flint-40B-A2.5B decodes at 67.02 tok/s, Meta Muse Glimmer 30B streams Onyx reasoning &amp; ATEM tools, Bonsai 2 27B fits in 7.4 GB, and 37.7 GB MoE checkpoints stream from SSD with 0 swap.</p>
             <div class="tag-row">
               <span class="chip">OpenAI + Anthropic + MCP</span>
               <span class="chip">Prefix-Tree KV Cache</span>
@@ -221,8 +271,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
 
           <article class="bento-card reveal-card" data-tone="amber">
             <span class="card-icon" aria-hidden="true">🧬</span>
-            <h3 data-ru="QTIP, PV-Tuning, GSQ-RCO и адаптеры PHM / OFT" data-en="QTIP Trellis, PV-Tuning, GSQ-RCO &amp; PHM / OFT Adapters">QTIP, PV-Tuning, GSQ-RCO и адаптеры PHM / OFT</h3>
-            <p data-ru="Решётчатое квантование QTIP 2.5 bpw укладывает Qwen3.8-27B в 10.0 GB и обходит 3-битный MLX affine по перплексии (4.621 против 4.702). Дообучайте LoRA, гиперкомплексные PHM и ортогональные OFT адаптеры со стримингом датасетов Nemotron прямо с Hugging Face." data-en="Bitshift trellis QTIP 2.5 bpw fits Qwen3.8-27B in 10.0 GB and beats 3-bit affine on 16k perplexity (4.621 vs 4.702). Train LoRA, hypercomplex PHM, and GPU-pure OFT adapters directly on streamed HF corpora.">Решётчатое квантование QTIP 2.5 bpw укладывает Qwen3.8-27B в 10.0 GB и обходит 3-битный MLX affine по перплексии (4.621 против 4.702). Дообучайте LoRA, гиперкомплексные PHM и ортогональные OFT адаптеры со стримингом датасетов Nemotron прямо с Hugging Face.</p>
+            <h3 data-i18n="f2_title">QTIP Trellis, PV-Tuning, GSQ-RCO &amp; PHM / OFT Adapters</h3>
+            <p data-i18n="f2_desc">Bitshift trellis QTIP 2.5 bpw fits Qwen3.8-27B in 10.0 GB and beats 3-bit affine on 16k perplexity (4.621 vs 4.702). Train LoRA, hypercomplex PHM and GPU-pure OFT adapters directly on streamed Hugging Face corpora.</p>
             <div class="tag-row">
               <span class="chip">QTIP 2.0–3.0 bpw</span>
               <span class="chip">Two-Stage PV-Tune</span>
@@ -232,8 +282,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
 
           <article class="bento-card reveal-card" data-tone="violet">
             <span class="card-icon" aria-hidden="true">🎙️</span>
-            <h3 data-ru="ZONOS3-Mini 44.1 kHz TTS и полнодуплексный голос" data-en="ZONOS3-Mini 44.1 kHz Neural TTS &amp; Duplex Speech">ZONOS3-Mini 44.1 kHz TTS и полнодуплексный голос</h3>
-            <p data-ru="Нативный синтез речи 44.1 kHz на 43 языках и 27 голосах (RTF 0.228–0.263, межъязыковой CFG 1.5) на базе Zyphra ZONOS3-Mini, плюс Kokoro-82M (ANE+MLX, TTFA < 80 мс), Qwen3-TTS, Fun-CosyVoice3, Chatterbox и Nemotron 3.5 Transcribe." data-en="Native 44.1 kHz speech synthesis across 43 languages and 27 voices (RTF 0.228–0.263, cross-lingual CFG 1.5) via Zyphra ZONOS3-Mini, alongside Kokoro-82M (ANE+MLX), Qwen3-TTS, CosyVoice3, Chatterbox, and Nemotron ASR.">Нативный синтез речи 44.1 kHz на 43 языках и 27 голосах (RTF 0.228–0.263, межъязыковой CFG 1.5) на базе Zyphra ZONOS3-Mini, плюс Kokoro-82M (ANE+MLX, TTFA &lt; 80 мс), Qwen3-TTS, Fun-CosyVoice3, Chatterbox и Nemotron 3.5 Transcribe.</p>
+            <h3 data-i18n="f3_title">ZONOS3-Mini 44.1 kHz Neural TTS &amp; Duplex Speech</h3>
+            <p data-i18n="f3_desc">Native 44.1 kHz speech synthesis across 43 languages and 27 voices (RTF 0.228–0.263, cross-lingual CFG 1.5) via Zyphra ZONOS3-Mini, alongside Kokoro-82M (ANE+MLX), Qwen3-TTS, CosyVoice3, Chatterbox and Nemotron ASR.</p>
             <div class="tag-row">
               <span class="chip">/v1/audio/speech</span>
               <span class="chip">pipeline.speak</span>
@@ -243,8 +293,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
 
           <article class="bento-card reveal-card" data-tone="rose">
             <span class="card-icon" aria-hidden="true">🎨</span>
-            <h3 data-ru="Генерация изображений на MLX и точный OCR" data-en="Native MLX Image Studio &amp; Vision OCR">Генерация изображений на MLX и точный OCR</h3>
-            <p data-ru="FLUX.2/3-klein, Z-Image-Turbo, Iris-3B, SANA-1.5 и Step1X-Edit работают локально через /v1/images/* и pipeline.imagine с общим текстовым энкодером, TeaCache и живыми превью TAEF, а DeepSeek-OCR-2 и PaddleOCR-VL-1.5 читают сложные PDF и таблицы." data-en="Run FLUX.2/3-klein, Z-Image-Turbo, Iris-3B, SANA-1.5, and Step1X-Edit locally with shared text encoders, TeaCache, and live TAEF SSE previews, paired with DeepSeek-OCR-2 and PaddleOCR-VL-1.5 document perception.">FLUX.2/3-klein, Z-Image-Turbo, Iris-3B, SANA-1.5 и Step1X-Edit работают локально через /v1/images/* и pipeline.imagine с общим текстовым энкодером, TeaCache и живыми превью TAEF, а DeepSeek-OCR-2 и PaddleOCR-VL-1.5 читают сложные PDF и таблицы.</p>
+            <h3 data-i18n="f4_title">Native MLX Image Studio &amp; Vision OCR</h3>
+            <p data-i18n="f4_desc">Run FLUX.2/3-klein, Z-Image-Turbo, Iris-3B, SANA-1.5 and Step1X-Edit locally with shared text encoders, TeaCache and live TAEF SSE previews, paired with DeepSeek-OCR-2 and PaddleOCR-VL-1.5 document perception.</p>
             <div class="tag-row">
               <span class="chip">/v1/images/*</span>
               <span class="chip">TeaCache + Judge</span>
@@ -254,8 +304,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
 
           <article class="bento-card reveal-card" data-tone="emerald">
             <span class="card-icon" aria-hidden="true">🔬</span>
-            <h3 data-ru="Model X-Ray и эпистемический гейт Белнапа" data-en="Model X-Ray &amp; Zero-Token Belnap Epistemic Gate">Model X-Ray и эпистемический гейт Белнапа</h3>
-            <p data-ru="Вскрывайте спектры Марченко — Пастура, logit lens по головам, комплексные фазорные пробы MVN и четырёхзначное состояние свидетельств (support, refutation, needs_tool) на трирешётке SIXTEEN_3 ещё до декодирования первого токена ответа." data-en="Inspect Marchenko–Pastur spectra, per-head logit lens, complex MVN phasor probes, Fisher–Rao geodesic drift, and four-valued Belnap evidence states on the SIXTEEN_3 trilattice before decoding a single token.">Вскрывайте спектры Марченко — Пастура, logit lens по головам, комплексные фазорные пробы MVN и четырёхзначное состояние свидетельств (support, refutation, needs_tool) на трирешётке SIXTEEN_3 ещё до декодирования первого токена ответа.</p>
+            <h3 data-i18n="f5_title">Model X-Ray &amp; Zero-Token Belnap Epistemic Gate</h3>
+            <p data-i18n="f5_desc">Inspect Marchenko–Pastur spectra, per-head logit lens, complex MVN phasor probes, Fisher–Rao geodesic drift and four-valued Belnap evidence states on the SIXTEEN_3 trilattice before decoding a single token.</p>
             <div class="tag-row">
               <span class="chip">SIXTEEN_3 Trilattice</span>
               <span class="chip">Reversible Overlays</span>
@@ -265,8 +315,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
 
           <article class="bento-card reveal-card" data-tone="cobalt">
             <span class="card-icon" aria-hidden="true">🏆</span>
-            <h3 data-ru="Декларативные бенчмарки и экспорт в 10 лидербордов" data-en="Declarative Benchmarks &amp; 10 Leaderboard Exporters">Декларативные бенчмарки и экспорт в 10 лидербордов</h3>
-            <p data-ru="Описывайте регрессионные гейты прямо в basalt.yaml: basalt compose bench прогоняет 17 адаптеров (включая лестницу Earth → Moon и официальный pass@2 ARC-AGI) и собирает пакеты для ARC Prize, SWE-bench, Terminal-Bench, GAIA и LiveCodeBench." data-en="Declare throughput, perplexity, and accuracy gates in YAML: basalt compose bench runs 17 suite adapters and exports verified bundles for ARC Prize, SWE-bench, Terminal-Bench, GAIA, BFCL, and LiveCodeBench.">Описывайте регрессионные гейты прямо в basalt.yaml: basalt compose bench прогоняет 17 адаптеров (включая лестницу Earth → Moon и официальный pass@2 ARC-AGI) и собирает пакеты для ARC Prize, SWE-bench, Terminal-Bench, GAIA и LiveCodeBench.</p>
+            <h3 data-i18n="f6_title">Declarative Benchmarks &amp; 10 Leaderboard Exporters</h3>
+            <p data-i18n="f6_desc">Declare throughput, perplexity and accuracy gates in YAML: basalt compose bench runs 17 suite adapters and exports verified bundles for ARC Prize, SWE-bench, Terminal-Bench, GAIA, BFCL and LiveCodeBench.</p>
             <div class="tag-row">
               <span class="chip">compose bench</span>
               <span class="chip">ARC-AGI pass@2</span>
@@ -283,13 +333,13 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
     <section id="compose">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="DOCKER-COMPOSE ДЛЯ МОДЕЛЕЙ · 7 СТУПЕНЕЙ ОЗУ × 12 АРХЕТИПОВ" data-en="DOCKER-COMPOSE FOR MODELS · 7 RAM TIERS × 12 ARCHETYPES">DOCKER-COMPOSE ДЛЯ МОДЕЛЕЙ · 7 СТУПЕНЕЙ ОЗУ × 12 АРХЕТИПОВ</span>
-          <h2 class="section-title" data-ru="84 откалиброванных профиля Compose под любую память Mac" data-en="84 Hardware-Calibrated Compose Profiles for Every Mac">84 откалиброванных профиля Compose под любую память Mac</h2>
-          <p class="section-sub" data-ru="Выберите объём объединённой памяти вашего Mac: Basalt автоматически закрепляет 4 основных рекомендованных профиля (★) и проверяет бюджет памяти до загрузки весов." data-en="Pick your Mac's unified memory tier: Basalt pins the 4 primary recommended stacks (★) and verifies resident memory budgets before loading a single byte.">Выберите объём объединённой памяти вашего Mac: Basalt автоматически закрепляет 4 основных рекомендованных профиля (★) и проверяет бюджет памяти до загрузки весов.</p>
+          <span class="section-kicker" data-i18n="comp_kicker">DOCKER-COMPOSE FOR MODELS · 7 RAM TIERS × 12 ARCHETYPES</span>
+          <h2 class="section-title" data-i18n="comp_title">84 Hardware-Calibrated Compose Profiles for Every Mac</h2>
+          <p class="section-sub" data-i18n="comp_sub">Pick your Mac unified memory tier: Basalt pins the 4 primary recommended stacks (★) and verifies resident memory budgets before loading a single byte.</p>
         </div>
 
         <div class="tabs-shell">
-          <div class="tablist-scroller" focusgroup="tablist nomemory" aria-label="Ступени объединённой памяти Mac" data-aria-ru="Ступени объединённой памяти Mac" data-aria-en="Mac unified memory tiers">
+          <div class="tablist-scroller" focusgroup="tablist nomemory" aria-label="Mac unified memory tiers" data-i18n-aria="comp_tabs_aria">
             <button type="button" id="tab-16" aria-selected="false">16 GB</button>
             <button type="button" id="tab-24" aria-selected="true" focusgroupstart>24 GB ★</button>
             <button type="button" id="tab-36" aria-selected="false">32–36 GB</button>
@@ -307,8 +357,8 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
                   <div class="profile-item is-primary"><strong>★ 16gb-daily-chat <span>~4.3 GB</span></strong><span>gemma-4-e4b-it-4bit + Apple Vision + Speech</span></div>
                   <div class="profile-item is-primary"><strong>★ 16gb-coding-agent <span>~4.8 GB</span></strong><span>Qwen2.5-Coder-7B + small-M kernel + MCP</span></div>
                   <div class="profile-item is-primary"><strong>★ 16gb-voice-zonos <span>~6.8 GB</span></strong><span>gemma-4-e4b + ZONOS3-Mini 44.1 kHz + Kokoro</span></div>
-                  <div class="profile-item is-primary"><strong>★ 16gb-multimodal-desk <span>~7.2 GB</span></strong><span>OCR on-demand + System One + ZONOS3</span></div>
-                  <div class="profile-item"><strong>16gb-moe-frontier <span>~7.4 GB</span></strong><span>Ternary-Bonsai-2-27B (--mtp) + 8 специализированных</span></div>
+                  <div class="profile-item is-primary"><strong>★ 16gb-multimodal-desk <span>~7.2 GB</span></strong><span>On-demand OCR + System One + ZONOS3</span></div>
+                  <div class="profile-item"><strong>16gb-moe-frontier <span>~7.4 GB</span></strong><span>Ternary-Bonsai-2-27B (--mtp) + 8 specialist stacks</span></div>
                   <div class="profile-item"><strong>16gb-creative-studio <span>~8.9 GB</span></strong><span>Z-Image-Turbo + TeaCache + prompt upsample</span></div>
                 </div>
                 <div class="code-box copyable">
@@ -332,7 +382,7 @@ basalt compose up 16gb-moe-frontier</code></pre>
                   <div class="profile-item is-primary"><strong>★ 24gb-voice-zonos <span>~9.9 GB</span></strong><span>gemma-4-12B + ZONOS3-Mini 44.1 kHz + Kokoro ANE</span></div>
                   <div class="profile-item is-primary"><strong>★ 24gb-multimodal-desk <span>~10.0 GB</span></strong><span>PaddleOCR-VL + System One + ZONOS3 44.1 kHz</span></div>
                   <div class="profile-item"><strong>24gb-moe-frontier <span>~17.6 GB</span></strong><span>Flint-40B-A2.5B (67 tok/s) / Qwen3.6-35B SSD</span></div>
-                  <div class="profile-item"><strong>24gb-document-ocr <span>~9.8 GB</span></strong><span>DeepSeek-OCR-2 + эпистемический гейт Белнапа</span></div>
+                  <div class="profile-item"><strong>24gb-document-ocr <span>~9.8 GB</span></strong><span>DeepSeek-OCR-2 + Belnap epistemic gate</span></div>
                 </div>
                 <div>
                   <div class="code-box copyable">
@@ -345,7 +395,7 @@ basalt compose up 24gb-voice-zonos
 basalt compose up 24gb-coding-agent</code></pre>
                   </div>
                   <div style="margin-block-start: 0.75rem;">
-                    <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?profile=24gb-voice-zonos" target="_blank" rel="noopener">▶ Запустить 24gb-voice-zonos в Basalt.app</a>
+                    <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?profile=24gb-voice-zonos" target="_blank" rel="noopener" data-i18n="comp_launch_24">▶ Launch 24gb-voice-zonos in Basalt.app</a>
                   </div>
                 </div>
               </div>
@@ -355,12 +405,12 @@ basalt compose up 24gb-coding-agent</code></pre>
             <div role="tabpanel" aria-labelledby="tab-36" hidden="until-found">
               <div class="tabpanel-inner">
                 <div class="profile-list">
-                  <div class="profile-item is-primary"><strong>★ 32-36gb-daily-chat <span>~14.5 GB</span></strong><span>gemma-4-26B-A4B-it-qat-4bit (алиасы 32gb / 36gb)</span></div>
+                  <div class="profile-item is-primary"><strong>★ 32-36gb-daily-chat <span>~14.5 GB</span></strong><span>gemma-4-26B-A4B-it-qat-4bit (32gb / 36gb aliases)</span></div>
                   <div class="profile-item is-primary"><strong>★ 32-36gb-coding-agent <span>~18.1 GB</span></strong><span>Meta Muse-Glimmer-30B-4bit (ATEM + Onyx) + MCP</span></div>
                   <div class="profile-item is-primary"><strong>★ 32-36gb-voice-zonos <span>~16.8 GB</span></strong><span>gemma-4-26B-A4B + ZONOS3-Mini 44.1 kHz</span></div>
                   <div class="profile-item is-primary"><strong>★ 32-36gb-multimodal-desk <span>~18.2 GB</span></strong><span>DeepSeek-OCR-2 + System One + ZONOS3</span></div>
                   <div class="profile-item"><strong>32-36gb-moe-frontier <span>~17.6 GB</span></strong><span>Flint-40B-A2.5B / Nemotron-3.5-Lightning-30B</span></div>
-                  <div class="profile-item"><strong>32-36gb-creative-studio <span>~18.9 GB</span></strong><span>FLUX.2-klein + резидентный энкодер + Judge</span></div>
+                  <div class="profile-item"><strong>32-36gb-creative-studio <span>~18.9 GB</span></strong><span>FLUX.2-klein + resident text encoder + Judge</span></div>
                 </div>
                 <div class="code-box copyable">
                   <span class="copy">
@@ -368,8 +418,8 @@ basalt compose up 24gb-coding-agent</code></pre>
                     <span class="tip" role="status"></span>
                   </span>
                   <pre><code id="cmd-36">basalt compose up 36gb-daily-chat
-basalt compose up 32gb-voice-zonos
-basalt compose up 32-36gb-moe-frontier</code></pre>
+basalt compose up 32-36gb-coding-agent
+basalt compose up 32gb-voice-zonos</code></pre>
                 </div>
               </div>
             </div>
@@ -378,18 +428,18 @@ basalt compose up 32-36gb-moe-frontier</code></pre>
             <div role="tabpanel" aria-labelledby="tab-48" hidden="until-found">
               <div class="tabpanel-inner">
                 <div class="profile-list">
-                  <div class="profile-item is-primary"><strong>★ 48gb-daily-chat <span>~18.5 GB</span></strong><span>Qwen3.8-27B-4bit резидентно + длинный контекст</span></div>
-                  <div class="profile-item is-primary"><strong>★ 48gb-coding-agent <span>~19.8 GB</span></strong><span>Muse-Glimmer-30B-oQ4e + OpenJev + MCP</span></div>
-                  <div class="profile-item is-primary"><strong>★ 48gb-voice-zonos <span>~21.0 GB</span></strong><span>27B Chat + ZONOS3-Mini резидентно без выгрузки</span></div>
-                  <div class="profile-item is-primary"><strong>★ 48gb-multimodal-desk <span>~25.4 GB</span></strong><span>OCR + Nemotron ASR + ZONOS3 в едином пуле</span></div>
+                  <div class="profile-item is-primary"><strong>★ 48gb-daily-chat <span>~18.5 GB</span></strong><span>Qwen3.8-27B-4bit resident + long KV context</span></div>
+                  <div class="profile-item is-primary"><strong>★ 48gb-coding-agent <span>~20.7 GB</span></strong><span>Muse-Glimmer-30B-oQ4e + OpenJev + MCP</span></div>
+                  <div class="profile-item is-primary"><strong>★ 48gb-voice-zonos <span>~21.0 GB</span></strong><span>27B Chat + ZONOS3-Mini co-resident zero eviction</span></div>
+                  <div class="profile-item is-primary"><strong>★ 48gb-multimodal-desk <span>~25.4 GB</span></strong><span>OCR + Nemotron ASR + ZONOS3 unified pool</span></div>
                 </div>
                 <div class="code-box copyable">
                   <span class="copy">
                     <button type="button" class="copy-button" command="--copy" commandfor="cmd-48" aria-label="Copy 48 GB Compose command"><span class="icon-copy" aria-hidden="true">⧉</span><span class="icon-check" aria-hidden="true">✓</span><span>Copy</span></button>
                     <span class="tip" role="status"></span>
                   </span>
-                  <pre><code id="cmd-48">basalt compose up 48gb-multimodal-desk
-basalt compose up 48gb-voice-zonos</code></pre>
+                  <pre><code id="cmd-48">basalt compose up 48gb-coding-agent
+basalt compose up 48gb-multimodal-desk</code></pre>
                 </div>
               </div>
             </div>
@@ -398,10 +448,10 @@ basalt compose up 48gb-voice-zonos</code></pre>
             <div role="tabpanel" aria-labelledby="tab-64" hidden="until-found">
               <div class="tabpanel-inner">
                 <div class="profile-list">
-                  <div class="profile-item is-primary"><strong>★ 64gb-daily-chat <span>~37.7 GB</span></strong><span>Qwen3.6-35B-A3B-8bit полностью резидентно в RAM</span></div>
-                  <div class="profile-item is-primary"><strong>★ 64gb-coding-agent <span>~39.5 GB</span></strong><span>35B-8bit + локальный судья OpenJev-Flash-9B</span></div>
+                  <div class="profile-item is-primary"><strong>★ 64gb-daily-chat <span>~37.7 GB</span></strong><span>Qwen3.6-35B-A3B-8bit 100% resident in RAM</span></div>
+                  <div class="profile-item is-primary"><strong>★ 64gb-coding-agent <span>~39.5 GB</span></strong><span>35B-8bit + local OpenJev-Flash-9B judge</span></div>
                   <div class="profile-item is-primary"><strong>★ 64gb-voice-zonos <span>~40.2 GB</span></strong><span>35B-8bit + ZONOS3-Mini + Nemotron Transcribe</span></div>
-                  <div class="profile-item is-primary"><strong>★ 64gb-moe-frontier <span>~36.0 GB</span></strong><span>Ricursive Ripple-65B-4bit sparse MoE</span></div>
+                  <div class="profile-item is-primary"><strong>★ 64gb-moe-frontier <span>~36.0 GB</span></strong><span>Ricursive Ripple-65B-4bit / Muse-Glimmer oQ4e</span></div>
                 </div>
                 <div class="code-box copyable">
                   <span class="copy">
@@ -418,10 +468,10 @@ basalt compose up 64gb-moe-frontier</code></pre>
             <div role="tabpanel" aria-labelledby="tab-128" hidden="until-found">
               <div class="tabpanel-inner">
                 <div class="profile-list">
-                  <div class="profile-item is-primary"><strong>★ 128gb-daily-chat <span>~58.0 GB</span></strong><span>Мультимодальный ансамбль 65B + 27B без выгрузок</span></div>
-                  <div class="profile-item is-primary"><strong>★ 128gb-coding-agent <span>~68.0 GB</span></strong><span>Ансамбль кодовых и рассуждающих моделей + MCP</span></div>
-                  <div class="profile-item is-primary"><strong>★ 128gb-voice-zonos <span>~62.0 GB</span></strong><span>Резидентный полный дуплекс ASR + LLM + ZONOS3</span></div>
-                  <div class="profile-item is-primary"><strong>★ 128gb-multimodal-desk <span>~74.0 GB</span></strong><span>OCR + Image Studio + ASR + ZONOS3 одновременно</span></div>
+                  <div class="profile-item is-primary"><strong>★ 128gb-daily-chat <span>~58.0 GB</span></strong><span>Multi-model 65B + 27B ensemble, zero eviction</span></div>
+                  <div class="profile-item is-primary"><strong>★ 128gb-coding-agent <span>~68.0 GB</span></strong><span>Muse-Glimmer-30B BF16 + specialist coding stack</span></div>
+                  <div class="profile-item is-primary"><strong>★ 128gb-voice-zonos <span>~62.0 GB</span></strong><span>Resident full-duplex ASR + LLM + ZONOS3</span></div>
+                  <div class="profile-item is-primary"><strong>★ 128gb-multimodal-desk <span>~74.0 GB</span></strong><span>OCR + Image Studio + ASR + ZONOS3 simultaneously</span></div>
                 </div>
                 <div class="code-box copyable">
                   <span class="copy">
@@ -438,10 +488,10 @@ basalt compose up 128gb-coding-agent</code></pre>
             <div role="tabpanel" aria-labelledby="tab-256" hidden="until-found">
               <div class="tabpanel-inner">
                 <div class="profile-list">
-                  <div class="profile-item is-primary"><strong>★ 256gb-daily-chat <span>~112 GB</span></strong><span>Максимум точности Mac Studio Ultra (алиасы 192gb / 236gb)</span></div>
-                  <div class="profile-item is-primary"><strong>★ 256gb-coding-agent <span>~128 GB</span></strong><span>Многомодельная верификация кода и параллельные слоты</span></div>
-                  <div class="profile-item is-primary"><strong>★ 256gb-voice-zonos <span>~118 GB</span></strong><span>Все речевые, зрительные и чат-модели всегда resident</span></div>
-                  <div class="profile-item is-primary"><strong>★ 256gb-multimodal-desk <span>~136 GB</span></strong><span>Полная студия LLM + OCR + ASR + TTS + FLUX 2K</span></div>
+                  <div class="profile-item is-primary"><strong>★ 256gb-daily-chat <span>~112 GB</span></strong><span>Mac Studio Ultra unquantized flagship (192gb / 236gb)</span></div>
+                  <div class="profile-item is-primary"><strong>★ 256gb-coding-agent <span>~128 GB</span></strong><span>Multi-model code verification &amp; parallel batch slots</span></div>
+                  <div class="profile-item is-primary"><strong>★ 256gb-voice-zonos <span>~118 GB</span></strong><span>All speech, vision &amp; reasoning models co-resident</span></div>
+                  <div class="profile-item is-primary"><strong>★ 256gb-multimodal-desk <span>~136 GB</span></strong><span>Full LLM + OCR + ASR + TTS + FLUX 2K workstation</span></div>
                 </div>
                 <div class="code-box copyable">
                   <span class="copy">
@@ -464,14 +514,14 @@ basalt compose up 256gb-coding-agent</code></pre>
     <section id="mac-app">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="НАТИВНОЕ ПРИЛОЖЕНИЕ SWIFTUI · MACOS 27 LIQUID GLASS" data-en="NATIVE SWIFTUI DESKTOP APP · MACOS 27 LIQUID GLASS">НАТИВНОЕ ПРИЛОЖЕНИЕ SWIFTUI · MACOS 27 LIQUID GLASS</span>
-          <h2 class="section-title" data-ru="Basalt.app — автоопределение ОЗУ, окно Compose (⌥⌘C), голос и 2K-холст" data-en="Basalt.app — RAM-aware Compose Profiles (⌥⌘C), Duplex Voice &amp; 2K Canvas">Basalt.app — автоопределение ОЗУ, окно Compose (⌥⌘C), голос и 2K-холст</h2>
-          <p class="section-sub" data-ru="257 мс тёплое открытие окна, 0 холостых пробуждений CPU, 7.4 мс p95 на токен в чате на 2 000 сообщений, глобальная панель ⌥Space поверх полноэкранных приложений и запуск в 1 клик по схеме basalt:// прямо с карточек Hugging Face." data-en="257 ms warm window, 0 idle CPU wakeups, 7.4 ms p95 per streamed token in a 2,000-message chat, ⌥Space Quick Ask, and one-click basalt:// deep links from Hugging Face.">257 мс тёплое открытие окна, 0 холостых пробуждений CPU, 7.4 мс p95 на токен в чате на 2 000 сообщений, глобальная панель ⌥Space поверх полноэкранных приложений и запуск в 1 клик по схеме basalt:// прямо с карточек Hugging Face.</p>
+          <span class="section-kicker" data-i18n="mac_kicker">NATIVE SWIFTUI DESKTOP APP · MACOS 27 LIQUID GLASS</span>
+          <h2 class="section-title" data-i18n="mac_title">Basalt.app — RAM-aware Compose Profiles (⌥⌘C), Duplex Voice &amp; 2K Canvas</h2>
+          <p class="section-sub" data-i18n="mac_sub">257 ms warm window, 0 idle CPU wakeups, 7.4 ms p95 per streamed token in a 2,000-message chat, ⌥Space Quick Ask above fullscreen apps, and one-click basalt:// deep links from Hugging Face.</p>
         </div>
 
         <figure class="showcase-frame reveal-card" style="margin: 0;">
-          <img class="img-dark-only" src="assets/compose-dark.png" width="2160" height="1400" loading="lazy" alt="Окно Compose Profiles в Basalt.app (тёмная тема macOS 27 Liquid Glass): определён объём 24 GB, рекомендованные профили со звездой и YAML-конфигурация 24gb-voice-zonos">
-          <img class="img-light-only" src="assets/compose-light.png" width="2160" height="1400" loading="lazy" alt="Окно Compose Profiles в Basalt.app (светлая тема macOS 27 Liquid Glass): определён объём 24 GB, рекомендованные профили со звездой и YAML-конфигурация 24gb-voice-zonos">
+          <img class="img-dark-only" src="assets/compose-dark.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_dark" alt="Compose Profiles window in Basalt.app (dark macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-voice-zonos YAML configuration">
+          <img class="img-light-only" src="assets/compose-light.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_light" alt="Compose Profiles window in Basalt.app (light macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-voice-zonos YAML configuration">
         </figure>
       </div>
     </section>
@@ -482,38 +532,38 @@ basalt compose up 256gb-coding-agent</code></pre>
     <section class="deferred-section" id="benchmarks">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="ЧЕСТНЫЕ ЗАМЕРЫ НА РЕАЛЬНОМ ЖЕЛЕЗЕ (M4 PRO 24 GB)" data-en="MEASURED ON REAL HARDWARE (APPLE M4 PRO 24 GB)">ЧЕСТНЫЕ ЗАМЕРЫ НА РЕАЛЬНОМ ЖЕЛЕЗЕ (M4 PRO 24 GB)</span>
-          <h2 class="section-title" data-ru="Цифры, подтверждённые логами и золотыми фикстурами" data-en="Numbers Backed by Logs and Golden Logit Fixtures">Цифры, подтверждённые логами и золотыми фикстурами</h2>
-          <p class="section-sub" data-ru="Каждая цифра привязана к PR, тесту или логу прогона в репозитории goodmai/basalt." data-en="Every benchmark claim links directly to its pull request, golden fixture, and runner log.">Каждая цифра привязана к PR, тесту или логу прогона в репозитории goodmai/basalt.</p>
+          <span class="section-kicker" data-i18n="bench_kicker">MEASURED ON REAL HARDWARE (APPLE M4 PRO 24 GB)</span>
+          <h2 class="section-title" data-i18n="bench_title">Numbers Backed by Logs and Golden Logit Fixtures</h2>
+          <p class="section-sub" data-i18n="bench_sub">Every benchmark claim links directly to its pull request, golden fixture and runner log in goodmai/basalt.</p>
         </div>
 
         <div class="bench-grid">
           <div class="stat-card reveal-card">
             <div class="stat-number" style="color: var(--cobalt);">3.45–3.62×</div>
-            <strong data-ru="Ускорение кода на Gemma 4 12B" data-en="Code Edit Speedup on Gemma 4 12B">Ускорение кода на Gemma 4 12B</strong>
+            <strong data-i18n="b1_title">Code Edit Speedup on Gemma 4 12B</strong>
             <div class="bar-track"><div class="bar-fill" style="inline-size: 92%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-ru="Точный спекулятивный prompt lookup (18.7 → 64.6 tok/s) без изменения жадного вывода (#265)." data-en="Exact staged KV-round prompt lookup (18.7 → 64.6 tok/s) with identical greedy output (#265).">Точный спекулятивный prompt lookup (18.7 → 64.6 tok/s) без изменения жадного вывода (#265).</span>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b1_desc">Exact staged KV-round prompt lookup (18.7 → 64.6 tok/s) with identical greedy output (#265).</span>
           </div>
 
           <div class="stat-card reveal-card">
             <div class="stat-number" style="color: var(--amber);">−72.1% PPL</div>
-            <strong data-ru="Решётка QTIP на 2.0–2.5 бита" data-en="QTIP Bitshift Trellis at 2.0–2.5 bpw">Решётка QTIP на 2.0–2.5 бита</strong>
+            <strong data-i18n="b2_title">QTIP Bitshift Trellis at 2.0–2.5 bpw</strong>
             <div class="bar-track"><div class="bar-fill" style="inline-size: 86%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-ru="Qwen3.8-27B в 8.48 GB снижает перплексию с 19.15 до 5.35, а в 10.0 GB (4.621) бьёт 3-bit affine (#494)." data-en="Qwen3.8-27B in 8.48 GB cuts 2-bit PPL from 19.15 to 5.35, and 2.5 bpw beats 3-bit affine (#494).">Qwen3.8-27B в 8.48 GB снижает перплексию с 19.15 до 5.35, а в 10.0 GB (4.621) бьёт 3-bit affine (#494).</span>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b2_desc">Qwen3.8-27B in 8.48 GB cuts 2-bit PPL from 19.15 to 5.35, and 2.5 bpw beats 3-bit affine (#494).</span>
           </div>
 
           <div class="stat-card reveal-card">
             <div class="stat-number" style="color: var(--emerald);">98.9% · −77%</div>
-            <strong data-ru="Локальный судья System One" data-en="Local System One Triage Judge">Локальный судья System One</strong>
+            <strong data-i18n="b3_title">Local System One Triage Judge</strong>
             <div class="bar-track"><div class="bar-fill" style="inline-size: 96%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-ru="OpenJev-Flash-9B-4bit рядом с Gemma 4 12B экономит 77% токенов большой модели в 15.3 GB (#465)." data-en="OpenJev-Flash-9B-4bit beside Gemma 4 12B saves 77% of downstream LLM tokens in 15.3 GB (#465).">OpenJev-Flash-9B-4bit рядом с Gemma 4 12B экономит 77% токенов большой модели в 15.3 GB (#465).</span>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b3_desc">OpenJev-Flash-9B-4bit beside Gemma 4 12B saves 77% of downstream LLM tokens in 15.3 GB (#465).</span>
           </div>
 
           <div class="stat-card reveal-card">
-            <div class="stat-number" style="color: var(--violet);">36 с → 1 с</div>
-            <strong data-ru="Второй ход агентской сессии" data-en="Second Agent Turn Latency">Второй ход агентской сессии</strong>
+            <div class="stat-number" style="color: var(--violet);">36 s → 1 s</div>
+            <strong data-i18n="b4_title">Second Agent Turn Latency</strong>
             <div class="bar-track"><div class="bar-fill" style="inline-size: 94%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-ru="Префиксное дерево кэша промптов с гибридными якорями на промпте в 12.6k токенов (#82, #219)." data-en="Prefix-tree prompt cache with recurrent hybrid anchors on a 12.6k-token agent prompt (#82, #219).">Префиксное дерево кэша промптов с гибридными якорями на промпте в 12.6k токенов (#82, #219).</span>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b4_desc">Prefix-tree prompt cache with recurrent hybrid anchors on a 12.6k-token agent prompt (#82, #219).</span>
           </div>
         </div>
       </div>
@@ -525,15 +575,15 @@ basalt compose up 256gb-coding-agent</code></pre>
     <section class="deferred-section" id="models">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="СТЕК GOODMAI НА HUGGING FACE · ЗАПУСК В 1 КЛИК" data-en="GOODMAI HUGGING FACE COLLECTION · 1-CLICK LAUNCH">СТЕК GOODMAI НА HUGGING FACE · ЗАПУСК В 1 КЛИК</span>
-          <h2 class="section-title" data-ru="42+ проверенных модели с мгновенным открытием в Basalt" data-en="42+ Verified Checkpoints Ready to Launch in One Click">42+ проверенных модели с мгновенным открытием в Basalt</h2>
-          <p class="section-sub" data-ru="Каждая карточка в huggingface.co/goodmai снабжена прямой кнопкой запуска Basalt.app и проверенной командой CLI." data-en="Every checkpoint in huggingface.co/goodmai ships with a one-click Basalt.app deep link and verified CLI command.">Каждая карточка в huggingface.co/goodmai снабжена прямой кнопкой запуска Basalt.app и проверенной командой CLI.</p>
+          <span class="section-kicker" data-i18n="hf_kicker">GOODMAI HUGGING FACE COLLECTION · 1-CLICK LAUNCH</span>
+          <h2 class="section-title" data-i18n="hf_title">42+ Verified Checkpoints Ready to Launch in One Click</h2>
+          <p class="section-sub" data-i18n="hf_sub">Every checkpoint in huggingface.co/goodmai ships with a one-click Basalt.app deep link and verified CLI command.</p>
         </div>
 
         <div class="models-grid">
           <article class="model-card reveal-card">
             <h3>goodmai/gemma-4-12B-it-qat-4bit</h3>
-            <p data-ru="Универсальная модель чата и зрения на каждый день (~7.6 GB на Mac 24 GB)." data-en="Daily-driver 12B QAT multimodal chat and vision model (~7.6 GB on 24 GB Mac).">Универсальная модель чата и зрения на каждый день (~7.6 GB на Mac 24 GB).</p>
+            <p data-i18n="m1_desc">Daily-driver 12B QAT multimodal chat and vision model (~7.6 GB on 24 GB Mac).</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2Fgemma-4-12B-it-qat-4bit&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/gemma-4-12B-it-qat-4bit" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -542,7 +592,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>goodmai/Qwen3.8-27B-QTIP-2.5bpw-MLX</h3>
-            <p data-ru="27B в 10.0 GB: решётка QTIP 2.5 bpw обходит 3-битный MLX affine на 16k PPL (4.621)." data-en="27B in 10.0 GB: 2.5 bpw QTIP trellis beats 3-bit MLX affine on 16k perplexity (4.621).">27B в 10.0 GB: решётка QTIP 2.5 bpw обходит 3-битный MLX affine на 16k PPL (4.621).</p>
+            <p data-i18n="m2_desc">27B in 10.0 GB: 2.5 bpw QTIP trellis beats 3-bit MLX affine on 16k perplexity (4.621).</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FQwen3.8-27B-QTIP-2.5bpw-MLX&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/Qwen3.8-27B-QTIP-2.5bpw-MLX" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -551,7 +601,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>goodmai/Qwen3.6-35B-A3B-8bit</h3>
-            <p data-ru="35B MoE (37.7 GB) со стримингом экспертов с SSD: 8.77 tok/s на 24 GB Mac и 0 swap." data-en="35B MoE (37.7 GB) streamed from SSD via POSIX AIO at 8.77 tok/s on 24 GB with 0 swap.">35B MoE (37.7 GB) со стримингом экспертов с SSD: 8.77 tok/s на 24 GB Mac и 0 swap.</p>
+            <p data-i18n="m3_desc">35B MoE (37.7 GB) streamed from SSD via POSIX AIO at 8.77 tok/s on 24 GB with 0 swap.</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FQwen3.6-35B-A3B-8bit&amp;role=moe-stream" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/Qwen3.6-35B-A3B-8bit" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -560,7 +610,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>Zyphra/ZONOS3-Mini-hf</h3>
-            <p data-ru="Нейросетевой 44.1 kHz TTS (43 языка, 27 голосов, межъязыковой CFG 1.5, RTF 0.23–0.26)." data-en="Native 44.1 kHz neural TTS across 43 languages &amp; 27 voices (RTF 0.23–0.26 in 2.24 GB).">Нейросетевой 44.1 kHz TTS (43 языка, 27 голосов, межъязыковой CFG 1.5, RTF 0.23–0.26).</p>
+            <p data-i18n="m4_desc">Native 44.1 kHz neural TTS across 43 languages &amp; 27 voices (RTF 0.23–0.26 in 2.24 GB).</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=Zyphra%2FZONOS3-Mini-hf&amp;role=tts" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/Zyphra/ZONOS3-Mini-hf" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -569,7 +619,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>goodmai/Ternary-Bonsai-2-27B-MTPLX-Optimized-Speed</h3>
-            <p data-ru="Тернарная 27B с вращением Адамара в 7.4 GB: 27.1 tok/s с MTP и до 38 tok/s на коде." data-en="Hadamard ternary 27B in 7.4 GB: 27.1 tok/s with MTP head and up to 38 tok/s on code.">Тернарная 27B с вращением Адамара в 7.4 GB: 27.1 tok/s с MTP и до 38 tok/s на коде.</p>
+            <p data-i18n="m5_desc">Hadamard ternary 27B in 7.4 GB: 27.1 tok/s with MTP head and up to 38 tok/s on code.</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FTernary-Bonsai-2-27B-MTPLX-Optimized-Speed&amp;role=mtp" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/Ternary-Bonsai-2-27B-MTPLX-Optimized-Speed" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -578,7 +628,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>goodmai/DeepSeek-OCR-2-8bit</h3>
-            <p data-ru="Зрительный энкодер с выученными запросами и тайлингом 768 для сложных документов (/v1/pipeline)." data-en="Learned-query vision encoder with official 768 tiling for dense PDFs (/v1/pipeline).">Зрительный энкодер с выученными запросами и тайлингом 768 для сложных документов (/v1/pipeline).</p>
+            <p data-i18n="m6_desc">Learned-query vision encoder with official 768 tiling for dense PDFs (/v1/pipeline).</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FDeepSeek-OCR-2-8bit&amp;role=ocr" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/DeepSeek-OCR-2-8bit" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -587,7 +637,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
           <article class="model-card reveal-card">
             <h3>mlx-community/Muse-Glimmer-30B-4bit</h3>
-            <p data-ru="Мультимодальный агент Meta Muse Glimmer 30B (131k контекст, приватные рассуждения Onyx to=self и инструменты ATEM)." data-en="Meta Muse Glimmer 30B multimodal agent (131k context, Onyx to=self reasoning &amp; ATEM tool calling).">Мультимодальный агент Meta Muse Glimmer 30B (131k контекст, приватные рассуждения Onyx to=self и инструменты ATEM).</p>
+            <p data-i18n="m7_desc">Meta Muse Glimmer 30B multimodal agent (131k context, Onyx to=self reasoning &amp; ATEM tool calling).</p>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=mlx-community%2FMuse-Glimmer-30B-4bit&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/meta-models/Muse-Glimmer-30B" target="_blank" rel="noopener">🤗 HF Card</a>
@@ -596,82 +646,94 @@ basalt compose up 256gb-coding-agent</code></pre>
         </div>
 
         <div style="margin-block-start: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a class="btn btn-hf" href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-ru="🤗 Открыть всю коллекцию 42+ моделей на Hugging Face →" data-en="🤗 Browse all 42+ models in the Hugging Face Collection →">🤗 Открыть всю коллекцию 42+ моделей на Hugging Face →</a>
-          <a class="btn" href="https://huggingface.co/Bosalt" target="_blank" rel="noopener" data-ru="Организация Bosalt на HF →" data-en="Bosalt Org on HF →">Организация Bosalt на HF →</a>
+          <a class="btn btn-hf" href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="hf_browse_all">🤗 Browse all 42+ models in the Hugging Face Collection →</a>
+          <a class="btn" href="https://huggingface.co/Bosalt" target="_blank" rel="noopener" data-i18n="hf_bosalt_org">Bosalt Org on HF →</a>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         SECTION 6: DOCUMENTATION HUB & ANIMATED ACCORDION FAQ
+         SECTION 6: DOCUMENTATION HUB (ENGLISH BY DEFAULT) & ANIMATED FAQ
          =================================================================== -->
     <section class="deferred-section" id="docs">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-ru="ПОЛНАЯ ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ" data-en="COMPLETE ENGINEERING DOCUMENTATION">ПОЛНАЯ ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ</span>
-          <h2 class="section-title" data-ru="Руководства, справочники API, архитектура и ответы на вопросы" data-en="Guides, API References, Architecture &amp; FAQ">Руководства, справочники API, архитектура и ответы на вопросы</h2>
+          <span class="section-kicker" data-i18n="docs_kicker">COMPLETE ENGINEERING DOCUMENTATION (ENGLISH)</span>
+          <h2 class="section-title" data-i18n="docs_title">Guides, API References, Architecture &amp; FAQ</h2>
         </div>
 
         <div class="docs-grid" style="margin-block-end: 2.75rem;">
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/install.md" target="_blank" rel="noopener">
-            <strong data-ru="Установка и требования" data-en="Install &amp; Requirements">Установка и требования</strong>
-            <span data-ru="Homebrew, сборка из исходников Xcode 27 / Swift 6.4, MetalToolchain и ./basalt-claude" data-en="Homebrew, building with Xcode 27 / Swift 6.4, MetalToolchain &amp; ./basalt-claude">Homebrew, сборка из исходников Xcode 27 / Swift 6.4, MetalToolchain и ./basalt-claude</span>
+            <strong data-i18n="d1_title">Install &amp; Requirements</strong>
+            <span data-i18n="d1_desc">Homebrew tap, building with Xcode 27 / Swift 6.4, MetalToolchain &amp; ./basalt-claude</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/compose.md" target="_blank" rel="noopener">
-            <strong data-ru="Справочник basalt compose" data-en="basalt compose Reference">Справочник basalt compose</strong>
-            <span data-ru="YAML v2, 84 аппаратных профиля, speak:, imagine:, эпистемика, адаптеры и compose bench" data-en="YAML v2, 84 hardware profiles, speak:, imagine:, epistemic gate, adapters &amp; bench">YAML v2, 84 аппаратных профиля, speak:, imagine:, эпистемика, адаптеры и compose bench</span>
+            <strong data-i18n="d2_title">basalt compose Reference</strong>
+            <span data-i18n="d2_desc">YAML v2, 84 hardware profiles, speak:, imagine:, epistemic gate, adapters &amp; bench</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/rest-api.md" target="_blank" rel="noopener">
-            <strong data-ru="REST API и OpenAPI / Swagger" data-en="REST API &amp; OpenAPI">REST API и OpenAPI / Swagger</strong>
-            <span data-ru="/v1/chat/completions, /v1/messages, /v1/audio/speech, /v1/images/*, /v1/pipeline и метрики" data-en="OpenAI, Anthropic /v1/messages, /v1/audio/speech, /v1/images/*, SSE &amp; OpenMetrics">/v1/chat/completions, /v1/messages, /v1/images/*, /v1/audio/speech, /v1/pipeline и метрики</span>
+            <strong data-i18n="d3_title">REST API &amp; OpenAPI</strong>
+            <span data-i18n="d3_desc">OpenAI, Anthropic /v1/messages, /v1/audio/speech, /v1/images/*, SSE &amp; OpenMetrics</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/integrations.md" target="_blank" rel="noopener">
-            <strong data-ru="Интеграции: Claude Code и MCP" data-en="Integrations: Claude Code &amp; MCP">Интеграции: Claude Code и MCP</strong>
-            <span data-ru="Подключение Claude Code, Cursor, Claude Desktop, OpenCode, Cline и фильтрация групп MCP" data-en="Claude Code, Cursor, Claude Desktop, OpenCode, Cline &amp; --mcp-enable / --mcp-disable">Подключение Claude Code, Cursor, Claude Desktop, OpenCode, Cline и фильтрация групп MCP</span>
+            <strong data-i18n="d4_title">Integrations: Claude Code &amp; MCP</strong>
+            <span data-i18n="d4_desc">Claude Code, Cursor, Claude Desktop, OpenCode, Cline &amp; --mcp-enable / --mcp-disable</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/commands.md" target="_blank" rel="noopener">
-            <strong data-ru="Команды CLI и флаги serve" data-en="CLI Commands &amp; serve Flags">Команды CLI и флаги serve</strong>
-            <span data-ru="Квантование QTIP и PV-Tuning, дистилляция, кэш промптов, CacheBlend и квантование KV" data-en="QTIP, PV-Tuning, distillation, prompt cache, CacheBlend, MTP &amp; KV zones">Квантование QTIP и PV-Tuning, дистилляция, кэш промптов, CacheBlend и квантование KV</span>
+            <strong data-i18n="d5_title">CLI Commands &amp; serve Flags</strong>
+            <span data-i18n="d5_desc">QTIP, PV-Tuning, distillation, prompt cache, CacheBlend, MTP, GGUF convert &amp; KV zones</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/mac-app.md" target="_blank" rel="noopener">
-            <strong data-ru="Basalt для Mac (Basalt.app)" data-en="Basalt for Mac (Basalt.app)">Basalt для Mac (Basalt.app)</strong>
-            <span data-ru="Окна Compose Profiles (⌥⌘C), Quick Ask (⌥Space), дуплексный голос, Shortcuts и нотаризация" data-en="Compose Profiles (⌥⌘C), Quick Ask (⌥Space), duplex voice, 2K Canvas &amp; notarized DMG">Окна Compose Profiles (⌥⌘C), Quick Ask (⌥Space), дуплексный голос, Shortcuts и нотаризация</span>
+            <strong data-i18n="d6_title">Basalt for Mac (Basalt.app)</strong>
+            <span data-i18n="d6_desc">Compose Profiles (⌥⌘C), Quick Ask (⌥Space), duplex voice, 2K Canvas &amp; notarized DMG</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md" target="_blank" rel="noopener">
-            <strong data-ru="Model X-Ray и хирургия весов" data-en="Model X-Ray &amp; Weight Surgery">Model X-Ray и хирургия весов</strong>
-            <span data-ru="Инструменты model_describe, trace_run, intervene, steer_commit и самообучение с гейтом KL" data-en="Live spectra, activation contrast, steering, reversible weight overlays &amp; KL gates">Инструменты model_describe, trace_run, intervene, steer_commit и самообучение с гейтом KL</span>
+            <strong data-i18n="d7_title">Model X-Ray &amp; Weight Surgery</strong>
+            <span data-i18n="d7_desc">Live spectra, activation contrast, steering, reversible weight overlays &amp; KL gates</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/ARCHITECTURE_PATTERNS_AND_MODULES.md" target="_blank" rel="noopener">
-            <strong data-ru="Архитектура и модули (RU)" data-en="Architecture &amp; Modules (RU)">Архитектура и модули (RU)</strong>
-            <span data-ru="Разделение Value Core / Actor Shell, Swift 6.4 RawSpan / UniqueArray и изоляция без гонок" data-en="Value Core / Actor Shell split, Swift 6.4 RawSpan / UniqueArray &amp; zero-hatch concurrency">Разделение Value Core / Actor Shell, Swift 6.4 RawSpan / UniqueArray и изоляция без гонок</span>
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/architecture.md" target="_blank" rel="noopener">
+            <strong data-i18n="d8_title">Architecture &amp; Modules</strong>
+            <span data-i18n="d8_desc">Value Core / Actor Shell split, Swift 6.4 RawSpan / UniqueArray &amp; zero-hatch concurrency</span>
+          </a>
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/models.md" target="_blank" rel="noopener">
+            <strong data-i18n="d9_title">Supported Models &amp; Families</strong>
+            <span data-i18n="d9_desc">Gemma 4, Qwen3.6/3.8, Meta Muse Glimmer 30B, Flint, Bonsai, ZONOS3-Mini &amp; OCR models</span>
+          </a>
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/pipelines.md" target="_blank" rel="noopener">
+            <strong data-i18n="d10_title">Multimodal Pipelines</strong>
+            <span data-i18n="d10_desc">Vision OCR, ASR transcription, 44.1 kHz TTS speech &amp; local image synthesis chains</span>
+          </a>
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/benchmarks.md" target="_blank" rel="noopener">
+            <strong data-i18n="d11_title">Benchmarks &amp; Golden Fixtures</strong>
+            <span data-i18n="d11_desc">Reproducible M4 Pro measurements, perplexity gates and golden reference logits</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
-            <strong data-ru="История релизов (CHANGELOG)" data-en="Release Notes (CHANGELOG)">История релизов (CHANGELOG)</strong>
-            <span data-ru="Подробный список изменений v0.11.0 с таблицами перплексии, памяти и скорости" data-en="Detailed v0.11.0 changelog with measured throughput, memory, and perplexity tables">Подробный список изменений v0.11.0 с таблицами перплексии, памяти и скорости</span>
+            <strong data-i18n="d12_title">Release Notes (CHANGELOG)</strong>
+            <span data-i18n="d12_desc">Detailed v0.11.0 changelog with measured throughput, memory and perplexity tables</span>
           </a>
         </div>
 
         <!-- Native <details> Accordion with smooth ::details-content transition -->
         <div class="accordion-header">
-          <h3 id="faq-heading" style="margin: 0; font-size: 1.3rem;" data-ru="Частые вопросы" data-en="Frequently Asked Questions">Частые вопросы</h3>
+          <h3 id="faq-heading" style="margin: 0; font-size: 1.3rem;" data-i18n="faq_title">Frequently Asked Questions</h3>
           <button type="button" class="icon-control" commandfor="faq-accordion" command="--toggle-all" aria-expanded="false">
-            <span class="expand-label" data-ru="Развернуть все" data-en="Expand all">Развернуть все</span>
-            <span class="collapse-label" data-ru="Свернуть все" data-en="Collapse all">Свернуть все</span>
+            <span class="expand-label" data-i18n="faq_expand">Expand all</span>
+            <span class="collapse-label" data-i18n="faq_collapse">Collapse all</span>
           </button>
         </div>
 
         <div class="accordion" id="faq-accordion" aria-labelledby="faq-heading">
           <details>
-            <summary data-ru="Какой Mac нужен для запуска Basalt v0.11.0?" data-en="What Mac hardware and OS are required for Basalt v0.11.0?">Какой Mac нужен для запуска Basalt v0.11.0?</summary>
-            <div class="details-body" data-ru="Любой Mac на Apple Silicon (M1–M4, от 16 до 256+ GB объединённой памяти) под управлением macOS 27+ и Xcode 27.0+ (Swift 6.4 + MetalToolchain при сборке из исходников). Никакого Python, Conda или Docker в рантайме не требуется." data-en="Any Apple Silicon Mac (M1–M4, 16 GB to 256+ GB unified memory) running macOS 27+ with Xcode 27.0+ (Swift 6.4 + MetalToolchain when building from source). Zero Python, Conda, or Docker at runtime.">Любой Mac на Apple Silicon (M1–M4, от 16 до 256+ GB объединённой памяти) под управлением macOS 27+ и Xcode 27.0+ (Swift 6.4 + MetalToolchain при сборке из исходников). Никакого Python, Conda или Docker в рантайме не требуется.</div>
+            <summary data-i18n="q1">What Mac hardware and OS are required for Basalt v0.11.0?</summary>
+            <div class="details-body" data-i18n="a1">Any Apple Silicon Mac (M1–M4, 16 GB to 256+ GB unified memory) running macOS 27+ with Xcode 27.0+ (Swift 6.4 + MetalToolchain when building from source). Zero Python, Conda or Docker at runtime.</div>
           </details>
           <details>
-            <summary data-ru="Уходят ли мои документы, аудио или промпты в облако?" data-en="Do my documents, audio recordings, or prompts ever leave my Mac?">Уходят ли мои документы, аудио или промпты в облако?</summary>
-            <div class="details-body" data-ru="Нет: по умолчанию Basalt работает на 100% локально и офлайн. Даже если вы явно добавите облачный fallback в compose-файл, текст, извлечённый из локальных документов и аудио (data: no-perceived), никогда не пересылается во внешние API." data-en="Never by default: Basalt runs 100% locally offline. Even when you opt into budgeted cloud escalation in a Compose file, perceived document and audio text defaults to data: no-perceived and never leaves your Mac.">Нет: по умолчанию Basalt работает на 100% локально и офлайн. Даже если вы явно добавите облачный fallback в compose-файл, текст, извлечённый из локальных документов и аудио (data: no-perceived), никогда не пересылается во внешние API.</div>
+            <summary data-i18n="q2">Do my documents, audio recordings, or prompts ever leave my Mac?</summary>
+            <div class="details-body" data-i18n="a2">Never by default: Basalt runs 100% locally offline. Even when you opt into budgeted cloud escalation in a Compose file, perceived document and audio text defaults to data: no-perceived and never leaves your Mac.</div>
           </details>
           <details>
-            <summary data-ru="Как работает автоподбор среди 84 профилей Compose?" data-en="How does automatic RAM recommendation work across the 84 Compose profiles?">Как работает автоподбор среди 84 профилей Compose?</summary>
-            <div class="details-body" data-ru="При открытии окна Compose Profiles (⌥⌘C) в Basalt.app функция ComposeMemoryTier.detect считывает объём физической памяти Mac и закрепляет вверху 4 основных профиля вашей ступени (daily-chat, coding-agent, voice-zonos, multimodal-desk), оставляя доступными к выбору и поиску все 84 профиля." data-en="When opening Compose Profiles (⌥⌘C) in Basalt.app, ComposeMemoryTier.detect reads physical unified memory and pins the 4 starred primary profiles for your tier at the top while keeping all 84 profiles searchable and selectable.">При открытии окна Compose Profiles (⌥⌘C) в Basalt.app функция ComposeMemoryTier.detect считывает объём физической памяти Mac и закрепляет вверху 4 основных профиля вашей ступени (daily-chat, coding-agent, voice-zonos, multimodal-desk), оставляя доступными к выбору и поиску все 84 профиля.</div>
+            <summary data-i18n="q3">How does automatic RAM recommendation work across the 84 Compose profiles?</summary>
+            <div class="details-body" data-i18n="a3">When opening Compose Profiles (⌥⌘C) in Basalt.app, ComposeMemoryTier.detect reads physical unified memory and pins the 4 starred primary profiles for your tier at the top while keeping all 84 profiles searchable and selectable.</div>
           </details>
         </div>
       </div>
@@ -683,10 +745,10 @@ basalt compose up 256gb-coding-agent</code></pre>
        ===================================================================== -->
   <dialog id="quickstart-dialog" closedby="any" aria-labelledby="qs-title">
     <div class="dialog-head">
-      <h2 id="qs-title" data-ru="⚡ Быстрый старт Basalt v0.11.0" data-en="⚡ Basalt v0.11.0 Quickstart">⚡ Быстрый старт Basalt v0.11.0</h2>
-      <button type="button" class="icon-control" commandfor="quickstart-dialog" command="close" aria-label="Закрыть окно" data-aria-ru="Закрыть окно" data-aria-en="Close dialog">✕</button>
+      <h2 id="qs-title" data-i18n="qs_title">⚡ Basalt v0.11.0 Quickstart</h2>
+      <button type="button" class="icon-control" commandfor="quickstart-dialog" command="close" aria-label="Close dialog" data-i18n-aria="qs_close">✕</button>
     </div>
-    <p style="margin-top: 0; color: var(--text-muted); font-size: 0.93rem;" data-ru="Установите CLI через Homebrew или соберите нативное приложение Basalt.app из репозитория:" data-en="Install the CLI via Homebrew or build the native Basalt.app bundle from source:">Установите CLI через Homebrew или соберите нативное приложение Basalt.app из репозитория:</p>
+    <p style="margin-top: 0; color: var(--text-muted); font-size: 0.93rem;" data-i18n="qs_lead">Install the CLI via Homebrew or build the native Basalt.app bundle from source:</p>
 
     <div class="code-box copyable" style="margin-block-end: 0.9rem;">
       <span class="copy">
@@ -710,8 +772,8 @@ open .build/Basalt.app</code></pre>
     </div>
 
     <div style="display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
-      <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener">▶ Лаунчер Hugging Face</a>
-      <button type="button" class="btn btn-sm" commandfor="quickstart-dialog" command="close" data-ru="Готово" data-en="Done">Готово</button>
+      <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener" data-i18n="qs_hf_btn">▶ Hugging Face Launcher</a>
+      <button type="button" class="btn btn-sm" commandfor="quickstart-dialog" command="close" data-i18n="qs_done">Done</button>
     </div>
   </dialog>
 
@@ -721,6 +783,7 @@ open .build/Basalt.app</code></pre>
         <strong>Basalt v0.11.0</strong> · MIT © 2026 <a href="https://github.com/goodmai" target="_blank" rel="noopener">goodmai</a>
       </div>
       <div class="footer-links">
+        <a href="https://github.com/goodmai/basalt/blob/main/README.md" target="_blank" rel="noopener">English Docs (README)</a>
         <a href="https://github.com/goodmai/basalt" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/goodmai/basalt/releases/tag/v0.11.0" target="_blank" rel="noopener">Release v0.11.0</a>
         <a href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener">Run with Basalt (HF Space)</a>
