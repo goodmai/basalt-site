@@ -356,7 +356,7 @@ basalt compose up 24gb-coding-agent</code></pre>
               <div class="tabpanel-inner">
                 <div class="profile-list">
                   <div class="profile-item is-primary"><strong>★ 32-36gb-daily-chat <span>~14.5 GB</span></strong><span>gemma-4-26B-A4B-it-qat-4bit (алиасы 32gb / 36gb)</span></div>
-                  <div class="profile-item is-primary"><strong>★ 32-36gb-coding-agent <span>~16.4 GB</span></strong><span>Qwen3.8-27B-4bit + OpenJev-Flash-9B + MCP</span></div>
+                  <div class="profile-item is-primary"><strong>★ 32-36gb-coding-agent <span>~18.1 GB</span></strong><span>Meta Muse-Glimmer-30B-4bit (ATEM + Onyx) + MCP</span></div>
                   <div class="profile-item is-primary"><strong>★ 32-36gb-voice-zonos <span>~16.8 GB</span></strong><span>gemma-4-26B-A4B + ZONOS3-Mini 44.1 kHz</span></div>
                   <div class="profile-item is-primary"><strong>★ 32-36gb-multimodal-desk <span>~18.2 GB</span></strong><span>DeepSeek-OCR-2 + System One + ZONOS3</span></div>
                   <div class="profile-item"><strong>32-36gb-moe-frontier <span>~17.6 GB</span></strong><span>Flint-40B-A2.5B / Nemotron-3.5-Lightning-30B</span></div>
@@ -379,7 +379,7 @@ basalt compose up 32-36gb-moe-frontier</code></pre>
               <div class="tabpanel-inner">
                 <div class="profile-list">
                   <div class="profile-item is-primary"><strong>★ 48gb-daily-chat <span>~18.5 GB</span></strong><span>Qwen3.8-27B-4bit резидентно + длинный контекст</span></div>
-                  <div class="profile-item is-primary"><strong>★ 48gb-coding-agent <span>~24.2 GB</span></strong><span>Двухступенчатый роутер кода + OpenJev + MCP</span></div>
+                  <div class="profile-item is-primary"><strong>★ 48gb-coding-agent <span>~19.8 GB</span></strong><span>Muse-Glimmer-30B-oQ4e + OpenJev + MCP</span></div>
                   <div class="profile-item is-primary"><strong>★ 48gb-voice-zonos <span>~21.0 GB</span></strong><span>27B Chat + ZONOS3-Mini резидентно без выгрузки</span></div>
                   <div class="profile-item is-primary"><strong>★ 48gb-multimodal-desk <span>~25.4 GB</span></strong><span>OCR + Nemotron ASR + ZONOS3 в едином пуле</span></div>
                 </div>
@@ -582,6 +582,15 @@ basalt compose up 256gb-coding-agent</code></pre>
             <div class="model-actions">
               <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FDeepSeek-OCR-2-8bit&amp;role=ocr" target="_blank" rel="noopener">▶ Basalt</a>
               <a class="btn btn-sm" href="https://huggingface.co/goodmai/DeepSeek-OCR-2-8bit" target="_blank" rel="noopener">🤗 HF Card</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3>mlx-community/Muse-Glimmer-30B-4bit</h3>
+            <p data-ru="Мультимодальный агент Meta Muse Glimmer 30B (131k контекст, приватные рассуждения Onyx to=self и инструменты ATEM)." data-en="Meta Muse Glimmer 30B multimodal agent (131k context, Onyx to=self reasoning &amp; ATEM tool calling).">Мультимодальный агент Meta Muse Glimmer 30B (131k контекст, приватные рассуждения Onyx to=self и инструменты ATEM).</p>
+            <div class="model-actions">
+              <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=mlx-community%2FMuse-Glimmer-30B-4bit&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
+              <a class="btn btn-sm" href="https://huggingface.co/meta-models/Muse-Glimmer-30B" target="_blank" rel="noopener">🤗 HF Card</a>
             </div>
           </article>
         </div>
