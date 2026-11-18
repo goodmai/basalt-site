@@ -43,6 +43,7 @@
         <a href="#compose" data-i18n="nav_compose">84 Compose Profiles</a>
         <a href="#mac-app" data-i18n="nav_mac">Basalt for Mac</a>
         <a href="#models" data-i18n="nav_models">HF Models (42+)</a>
+        <a href="#research" data-i18n="nav_research">Research</a>
         <a href="#docs" data-i18n="nav_docs">Documentation</a>
       </nav>
 
@@ -655,6 +656,82 @@ basalt compose up 256gb-coding-agent</code></pre>
     </section>
 
     <!-- ===================================================================
+         SECTION 5B: MATHEMATICAL & SCIENTIFIC RESEARCH FOUNDATIONS
+         =================================================================== -->
+    <section class="deferred-section" id="research">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="res_kicker">OPEN SCIENCE · 85+ PAPERS ACROSS 6 GLOBAL RESEARCH TRADITIONS</span>
+          <h2 class="section-title" data-i18n="res_title">Mathematical &amp; Scientific Research Foundations</h2>
+          <p class="section-sub" data-i18n="res_sub">Every Metal kernel, lattice quantizer, KV compressor, speculative verifier and epistemic gate in Basalt builds directly upon peer-reviewed mathematics and open preprints — with deep gratitude to their authors.</p>
+        </div>
+
+        <div class="models-grid" style="margin-block-end: 1.5rem;">
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r1_title">Basis, Trellis &amp; E8 Lattice Quantization</h3>
+            <p data-i18n="r1_desc">Local Walsh–Hadamard + Hessian Flip-Refinement (MACaQ), Kronecker FlatQuant, Givens LIRQuant, QTIP bitshift trellises, QuIP# E8P Gosset lattices, Babai–LLL TurboBoA &amp; teacher-KL PV-Tuning.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2611.10649" target="_blank" rel="noopener">MACaQ</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2406.11235" target="_blank" rel="noopener">QTIP</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2402.04396" target="_blank" rel="noopener">QuIP#</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2405.14852" target="_blank" rel="noopener">PV-Tuning</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r2_title">Sinkhorn Conditioning &amp; Router-Weighted MoE</h3>
+            <p data-i18n="r2_desc">Bistochastic dual-axis Sinkhorn–Knopp normalization (SINQ, No-Overhead SINQ, A-SINQ, EAQuant), router-weighted MoE GPTQ Hessians (Poimanov, ISP RAS 2026) &amp; bilevel DARTS-QAT.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2509.22944" target="_blank" rel="noopener">SINQ</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2611.05927" target="_blank" rel="noopener">No-OH SINQ</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2506.13329" target="_blank" rel="noopener">EAQuant</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r3_title">Unbiased Sub-2-Bit KV &amp; Microscaling Attention</h3>
+            <p data-i18n="r3_desc">2D KVarN + zero-bias 1-bit Johnson–Lindenstrauss sketches (QJL, PolarQuant, TurboQuant), Quest, DuoAttention, cross-lingual HeadKV, MXAttention (UOS + PNQ), SageAttention3 &amp; DeepSeek NSA.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2606.03458" target="_blank" rel="noopener">KVarN</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2406.03482" target="_blank" rel="noopener">QJL</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2607.24377" target="_blank" rel="noopener">MXAttention</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2502.11089" target="_blank" rel="noopener">NSA</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r4_title">Whitened Spectral Surgery &amp; Optimal-Transport Speculation</h3>
+            <p data-i18n="r4_desc">Cholesky-whitened SVD-LLM V2, SAES-SVD, Optimal Brain Restoration (OBR), lossless Optimal-Transport SpecTr &amp; Residual Race GPU verification, EAGLE-3 feature fusion &amp; DiffuCD.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2503.12340" target="_blank" rel="noopener">SVD-LLM V2</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2606.09080" target="_blank" rel="noopener">OBR</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2310.15141" target="_blank" rel="noopener">SpecTr</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2611.00506" target="_blank" rel="noopener">Residual Race</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r5_title">Epistemic Geometry, GQA Circuits &amp; Autoregressive Alignment</h3>
+            <p data-i18n="r5_desc">Marchenko–Pastur spectra, Fisher–Rao drift, Belnap SIXTEEN_3 trilattice, LeJEPA, GQA group path patching &amp; anti-steering guards (NLP2026), MAO-SNMF, ADPO/cADPO &amp; DiLoCo multi-Mac training.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2610.14224" target="_blank" rel="noopener">Harness²</a>
+              <a class="btn btn-sm" href="https://arxiv.org/abs/2311.08105" target="_blank" rel="noopener">DiLoCo</a>
+              <a class="btn btn-sm" href="https://machinelearning.apple.com/research/neural-engine-transformers" target="_blank" rel="noopener">Apple ML</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3 data-i18n="r6_title">Gratitude to Researchers &amp; Open Science</h3>
+            <p data-i18n="r6_desc">Sincere thanks to Apple MLX, Cornell RelaxML, Huawei CSL &amp; Noah’s Ark, IST Austria, MSU / MIAN / MIPT, Tsinghua, DeepSeek-AI, Google Research, Science Tokyo / UEC / Doshisha, Chung-Ang / Kangwon / Nota AI, ggml &amp; Hugging Face.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm btn-primary" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" target="_blank" rel="noopener" data-i18n="res_cta_doc">📖 Full Bibliography &amp; Proofs (85+ Works) →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
          SECTION 6: DOCUMENTATION HUB (ENGLISH BY DEFAULT) & ANIMATED FAQ
          =================================================================== -->
     <section class="deferred-section" id="docs">
@@ -712,6 +789,10 @@ basalt compose up 256gb-coding-agent</code></pre>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
             <strong data-i18n="d12_title">Release Notes (CHANGELOG)</strong>
             <span data-i18n="d12_desc">Detailed v0.11.0 changelog with measured throughput, memory and perplexity tables</span>
+          </a>
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" target="_blank" rel="noopener">
+            <strong data-i18n="d13_title">Research Foundations &amp; Gratitude</strong>
+            <span data-i18n="d13_desc">85+ cited papers, mathematical proofs across 9 domains and acknowledgements to authors</span>
           </a>
         </div>
 
