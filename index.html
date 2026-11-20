@@ -11,7 +11,7 @@
         localStorage.getItem('color-scheme') ?? 'light dark';
     } catch {}
   </script>
-  <title>Basalt v0.11.0 — Your Mac Is the AI Lab Now · Apple Silicon MLX &amp; ANE</title>
+  <title>Basalt v0.12.0 — Your Mac Is the AI Lab Now · Apple Silicon MLX &amp; ANE</title>
   <meta name="description" content="Basalt: native Swift 6.4 inference server (OpenAI, Anthropic, MCP), Video Studio (LTX-2.5, Kandinsky 6.0, Wan 2.2), Universal PV-MACaQ/QTIP/FlatQuant/QAT converter, ZONOS3-Mini 44.1 kHz &amp; LFM2.5-Audio duplex speech, 89 RAM-calibrated Compose profiles, 55+ verified models, and macOS 27 Liquid Glass app.">
   <link rel="canonical" href="https://bas-alt.vercel.app/">
   <meta property="og:url" content="https://bas-alt.vercel.app/">
@@ -35,7 +35,7 @@
       <a class="brand-link" href="#">
         <img src="assets/logo.svg" width="34" height="34" alt="" fetchpriority="high">
         <span>Basalt</span>
-        <span class="version-pill">v0.11.0</span>
+        <span class="version-pill">v0.12.0</span>
       </a>
 
       <nav class="nav-links" aria-label="Primary" data-i18n-aria="nav_label">
@@ -140,9 +140,9 @@
       <div class="container hero-grid">
         <div>
           <div class="eyebrow-row">
-            <a class="eyebrow-badge" href="https://github.com/goodmai/basalt/releases/tag/v0.11.0" target="_blank" rel="noopener">
+            <a class="eyebrow-badge" href="https://github.com/goodmai/basalt/releases/tag/v0.12.0" target="_blank" rel="noopener">
               <span aria-hidden="true">🚀</span>
-              <span data-i18n="badge_release">Release v0.11.0 · Swift 6.4 · macOS 27+</span>
+              <span data-i18n="badge_release">Release v0.12.0 · Swift 6.4 · macOS 27+</span>
             </a>
             <a class="eyebrow-badge" href="https://huggingface.co/goodmai" target="_blank" rel="noopener">
               <span aria-hidden="true">🤗</span>
@@ -183,9 +183,8 @@
               </button>
               <span class="tip" role="status"></span>
             </span>
-            <pre><code id="hero-cmd">brew tap goodmai/basalt https://github.com/goodmai/basalt
-brew trust goodmai/basalt &amp;&amp; brew install goodmai/basalt/basalt
-basalt compose up 24gb-voice-zonos
+            <pre><code id="hero-cmd">curl -fsSL https://github.com/goodmai/basalt/releases/latest/download/basalt-macos-arm64.tar.gz | tar -xz
+./basalt-macos-arm64/basalt serve --model goodmai/Qwen3.8-27B-PV-MACaQ-3bit-Affine-MLX --speculative-lookup --rest
 ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code></pre>
           </div>
         </div>
@@ -538,8 +537,13 @@ basalt compose up 256gb-coding-agent</code></pre>
         </div>
 
         <figure class="showcase-frame reveal-card" style="margin: 0;">
-          <img class="img-dark-only" src="assets/compose-dark.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_dark" alt="Compose Profiles window in Basalt.app (dark macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-voice-zonos YAML configuration">
-          <img class="img-light-only" src="assets/compose-light.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_light" alt="Compose Profiles window in Basalt.app (light macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-voice-zonos YAML configuration">
+          <img class="img-dark-only" src="assets/compose-dark.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_dark" alt="Compose Profiles window in Basalt.app (dark macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-video-studio YAML configuration">
+          <img class="img-light-only" src="assets/compose-light.png" width="2160" height="1400" loading="lazy" data-i18n-alt="mac_alt_light" alt="Compose Profiles window in Basalt.app (light macOS 27 Liquid Glass theme) showing detected 24 GB unified memory, starred recommended profiles and 24gb-video-studio YAML configuration">
+        </figure>
+
+        <figure class="showcase-frame reveal-card" style="margin: 1.5rem 0 0;">
+          <img class="img-dark-only" src="assets/chat-dark.png" width="2400" height="1520" loading="lazy" alt="Basalt.app chat (dark theme) with a tool call, attachments and the inspector showing tokens, first-token time and speed">
+          <img class="img-light-only" src="assets/chat-light.png" width="2400" height="1520" loading="lazy" alt="Basalt.app chat (light theme) with a tool call, attachments and the inspector showing tokens, first-token time and speed">
         </figure>
       </div>
     </section>
@@ -849,7 +853,7 @@ basalt compose up 256gb-coding-agent</code></pre>
 
         <div class="accordion" id="faq-accordion" aria-labelledby="faq-heading">
           <details>
-            <summary data-i18n="q1">What Mac hardware and OS are required for Basalt v0.11.0?</summary>
+            <summary data-i18n="q1">What Mac hardware and OS are required for Basalt v0.12.0?</summary>
             <div class="details-body" data-i18n="a1">Any Apple Silicon Mac (M1–M4, 16 GB to 256+ GB unified memory) running macOS 27+ with Xcode 27.0+ (Swift 6.4 + MetalToolchain when building from source). Zero Python, Conda or Docker at runtime.</div>
           </details>
           <details>
@@ -870,10 +874,19 @@ basalt compose up 256gb-coding-agent</code></pre>
        ===================================================================== -->
   <dialog id="quickstart-dialog" closedby="any" aria-labelledby="qs-title">
     <div class="dialog-head">
-      <h2 id="qs-title" data-i18n="qs_title">⚡ Basalt v0.11.0 Quickstart</h2>
+      <h2 id="qs-title" data-i18n="qs_title">⚡ Basalt v0.12.0 Quickstart</h2>
       <button type="button" class="icon-control" commandfor="quickstart-dialog" command="close" aria-label="Close dialog" data-i18n-aria="qs_close">✕</button>
     </div>
     <p style="margin-top: 0; color: var(--text-muted); font-size: 0.93rem;" data-i18n="qs_lead">Install the CLI via Homebrew or build the native Basalt.app bundle from source:</p>
+
+    <div class="code-box copyable" style="margin-block-end: 0.9rem;">
+      <span class="copy">
+        <button type="button" class="copy-button" command="--copy" commandfor="qs-bin" aria-label="Copy prebuilt binary commands"><span class="icon-copy" aria-hidden="true">⧉</span><span class="icon-check" aria-hidden="true">✓</span><span>Copy</span></button>
+        <span class="tip" role="status"></span>
+      </span>
+      <pre><code id="qs-bin">curl -fsSL https://github.com/goodmai/basalt/releases/latest/download/basalt-macos-arm64.tar.gz | tar -xz
+./basalt-macos-arm64/basalt serve --model goodmai/Qwen3.8-27B-PV-MACaQ-3bit-Affine-MLX --speculative-lookup --rest</code></pre>
+    </div>
 
     <div class="code-box copyable" style="margin-block-end: 0.9rem;">
       <span class="copy">
@@ -905,7 +918,7 @@ open .build/Basalt.app</code></pre>
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <strong>Basalt v0.11.0</strong> · MIT © 2026 <a href="https://github.com/goodmai" target="_blank" rel="noopener">goodmai</a>
+        <strong>Basalt v0.12.0</strong> · MIT © 2026 <a href="https://github.com/goodmai" target="_blank" rel="noopener">goodmai</a>
         <span style="opacity: 0.78; margin-inline-start: 0.5rem;" data-i18n="footer_counts">· 89 Compose Profiles · 55+ Verified Models (goodmai HF)</span>
       </div>
       <div class="footer-links">
@@ -913,7 +926,7 @@ open .build/Basalt.app</code></pre>
         <a href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="footer_models">HF Models (55+)</a>
         <a href="https://github.com/goodmai/basalt/blob/main/README.md" data-readme="1" target="_blank" rel="noopener" data-i18n="footer_readme">Docs (README)</a>
         <a href="https://github.com/goodmai/basalt" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/goodmai/basalt/releases/tag/v0.11.0" target="_blank" rel="noopener">Release v0.11.0</a>
+        <a href="https://github.com/goodmai/basalt/releases/tag/v0.12.0" target="_blank" rel="noopener">Release v0.12.0</a>
         <a href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener">Run with Basalt (HF Space)</a>
         <a href="https://huggingface.co/goodmai" target="_blank" rel="noopener">huggingface.co/goodmai</a>
       </div>
