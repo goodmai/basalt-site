@@ -408,6 +408,21 @@ function applyLanguage(code) {
     }
   });
 
+  const localizedDocLangs = new Set(['ru', 'zh', 'es', 'fr', 'ja', 'de']);
+  const useLocalizedDocs = localizedDocLangs.has(lang);
+  document.querySelectorAll('a[data-doc]').forEach((link) => {
+    const doc = link.getAttribute('data-doc');
+    if (!doc) return;
+    link.href = useLocalizedDocs
+      ? `https://github.com/goodmai/basalt/blob/main/docs/i18n/${lang}/${doc}`
+      : `https://github.com/goodmai/basalt/blob/main/docs/${doc}`;
+  });
+  document.querySelectorAll('a[data-readme]').forEach((link) => {
+    link.href = useLocalizedDocs
+      ? `https://github.com/goodmai/basalt/blob/main/README.${lang}.md`
+      : 'https://github.com/goodmai/basalt/blob/main/README.md';
+  });
+
   if (langSelect && langSelect.value !== lang) {
     langSelect.value = lang;
   }

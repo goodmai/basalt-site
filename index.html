@@ -12,7 +12,7 @@
     } catch {}
   </script>
   <title>Basalt v0.11.0 — Your Mac Is the AI Lab Now · Apple Silicon MLX &amp; ANE</title>
-  <meta name="description" content="Basalt v0.11.0: native Swift 6.4 inference server (OpenAI, Anthropic, MCP), QTIP/MACaQ/PV-Tuning quantization, Meta Muse Glimmer 30B, ZONOS3-Mini 44.1 kHz TTS, 89 RAM-calibrated Compose profiles, 50+ verified models, and macOS 27 Liquid Glass app.">
+  <meta name="description" content="Basalt: native Swift 6.4 inference server (OpenAI, Anthropic, MCP), Video Studio (LTX-2.5, Kandinsky 6.0, Wan 2.2), Universal PV-MACaQ/QTIP/FlatQuant/QAT converter, ZONOS3-Mini 44.1 kHz &amp; LFM2.5-Audio duplex speech, 89 RAM-calibrated Compose profiles, 55+ verified models, and macOS 27 Liquid Glass app.">
   <link rel="canonical" href="https://bas-alt.vercel.app/">
   <meta property="og:url" content="https://bas-alt.vercel.app/">
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
@@ -97,6 +97,21 @@
             </svg>
             <span class="flag-emoji" aria-hidden="true">🇨🇳 </span>中文
           </option>
+          <option value="ja" lang="ja">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="16" fill="#ffffff"/>
+              <circle cx="12" cy="8" r="4.6" fill="#BC002D"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇯🇵 </span>日本語
+          </option>
+          <option value="de" lang="de">
+            <svg aria-hidden="true" viewBox="0 0 24 16">
+              <rect width="24" height="5.34" fill="#000000"/>
+              <rect y="5.33" width="24" height="5.34" fill="#DD0000"/>
+              <rect y="10.66" width="24" height="5.34" fill="#FFCE00"/>
+            </svg>
+            <span class="flag-emoji" aria-hidden="true">🇩🇪 </span>Deutsch
+          </option>
           <option value="ar" lang="ar">
             <svg aria-hidden="true" viewBox="0 0 24 16">
               <rect width="24" height="16" fill="#006C35"/>
@@ -131,7 +146,7 @@
             </a>
             <a class="eyebrow-badge" href="https://huggingface.co/goodmai" target="_blank" rel="noopener">
               <span aria-hidden="true">🤗</span>
-              <span data-i18n="badge_models">50+ verified MLX / ANE models</span>
+              <span data-i18n="badge_models">55+ verified MLX / ANE models</span>
             </a>
           </div>
 
@@ -141,7 +156,7 @@
           </h1>
 
           <p class="hero-lead" data-i18n="hero_lead">
-            Serve, train, quantize, compose and dissect open LLMs, Meta Muse Glimmer 30B, 44.1 kHz neural speech, OCR and image synthesis on Apple Silicon. One Swift 6.4 binary speaks OpenAI API, Anthropic API and MCP with a native macOS 27 Liquid Glass app on top. Zero Python at runtime.
+            Serve, train, quantize, compose and dissect open LLMs, phased 24 GB Video Studio (LTX-2.5, Kandinsky 6.0, Wan 2.2), 44.1 kHz duplex speech, OCR and 2K image synthesis on Apple Silicon. One Swift 6.4 binary speaks OpenAI API, Anthropic API and MCP with a native macOS 27 Liquid Glass app on top. Zero Python at runtime.
           </p>
 
           <div class="cta-group">
@@ -264,55 +279,55 @@ ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=local claude</code
           <article class="bento-card reveal-card" data-tone="cobalt">
             <span class="card-icon" aria-hidden="true">⚡</span>
             <h3 data-i18n="f1_title">High-Speed Inference Behind Familiar APIs</h3>
-            <p data-i18n="f1_desc">Connect Claude Code, Cursor, OpenAI SDKs, OpenCode and aider in one line. Flint-40B-A2.5B decodes at 67.02 tok/s, Meta Muse Glimmer 30B streams Onyx reasoning &amp; ATEM tools, Bonsai 2 27B fits in 7.4 GB, and 37.7 GB MoE checkpoints stream from SSD with 0 swap.</p>
+            <p data-i18n="f1_desc">Connect Claude Code, Cursor, OpenAI SDKs, OpenCode and aider in one line. Ornith-1.5-35B-A3B MACaQ decodes at 64–75 tok/s (3.41× single-pass switch WHT kernel, #628), Gemma-4-31B PV-MACaQ 3.2 bpw fits 24 GB Macs at 14.1 tok/s (4/5 Ladder), Flint-40B-A2.5B hits 67.02 tok/s, and 37.7 GB MoEs stream from SSD with 0 swap.</p>
             <div class="tag-row">
               <span class="chip">OpenAI + Anthropic + MCP</span>
-              <span class="chip">Prefix-Tree KV Cache</span>
-              <span class="chip">polar4 / turbo4 KV</span>
+              <span class="chip">MACaQ Switch WHT 3.41×</span>
+              <span class="chip">UMA L0/L1/L2 KV</span>
             </div>
           </article>
 
           <article class="bento-card reveal-card" data-tone="amber">
             <span class="card-icon" aria-hidden="true">🧬</span>
-            <h3 data-i18n="f2_title">QTIP Trellis, PV-Tuning, GSQ-RCO &amp; PHM / OFT Adapters</h3>
-            <p data-i18n="f2_desc">Bitshift trellis QTIP 2.5 bpw fits Qwen3.8-27B in 10.0 GB and beats 3-bit affine on 16k perplexity (4.621 vs 4.702). Train LoRA, hypercomplex PHM and GPU-pure OFT adapters directly on streamed Hugging Face corpora.</p>
+            <h3 data-i18n="f2_title">Universal Converter: PV-MACaQ, QTIP, E8P, FlatQuant &amp; QAT</h3>
+            <p data-i18n="f2_desc">Convert any-to-any across PV-MACaQ (+52% speed &amp; −33% RAM on Qwen3.5-9B at 4/5 exact 8-bit parity), QTIP 2.0–3.0 bpw, QuIP# E8P 2-bit, FlatQuant, LIRQuant, SINQ, and domain QAT STE + quality/fairness audit. Train AdaLoRA (LR/40), SFT→DPO, ADPO/cADPO &amp; DiLoCo clusters.</p>
             <div class="tag-row">
-              <span class="chip">QTIP 2.0–3.0 bpw</span>
-              <span class="chip">Two-Stage PV-Tune</span>
-              <span class="chip">Native GGUF IQMetal</span>
+              <span class="chip">PV-MACaQ + FlatQuant</span>
+              <span class="chip">QTIP / E8P / SINQ</span>
+              <span class="chip">QAT STE + Audit</span>
             </div>
           </article>
 
           <article class="bento-card reveal-card" data-tone="violet">
             <span class="card-icon" aria-hidden="true">🎙️</span>
-            <h3 data-i18n="f3_title">ZONOS3-Mini 44.1 kHz Neural TTS &amp; Duplex Speech</h3>
-            <p data-i18n="f3_desc">Native 44.1 kHz speech synthesis across 43 languages and 27 voices (RTF 0.228–0.263, cross-lingual CFG 1.5) via Zyphra ZONOS3-Mini, alongside Kokoro-82M (ANE+MLX), Qwen3-TTS, CosyVoice3, Chatterbox and Nemotron ASR.</p>
+            <h3 data-i18n="f3_title">ZONOS3-Mini 44.1 kHz, LFM2.5-Audio Duplex &amp; ACE-Step Music</h3>
+            <p data-i18n="f3_desc">Native 44.1 kHz TTS across 43 languages (RTF 0.228–0.263) via ZONOS3-Mini alongside LFM2.5-Audio Mimi/SNAC duplex codecs, SmartTurn + Sortformer turn-taking, MossFormer2, Soprano-80M, Qwen3ForcedAligner, Kokoro-82M (ANE+MLX) and ACE-Step 1.5 music synthesis.</p>
             <div class="tag-row">
-              <span class="chip">/v1/audio/speech</span>
-              <span class="chip">pipeline.speak</span>
-              <span class="chip">ANE Fallback</span>
+              <span class="chip">/v1/audio/*</span>
+              <span class="chip">LFM2.5-Audio Duplex</span>
+              <span class="chip">ACE-Step 1.5</span>
             </div>
           </article>
 
           <article class="bento-card reveal-card" data-tone="rose">
-            <span class="card-icon" aria-hidden="true">🎨</span>
-            <h3 data-i18n="f4_title">Native MLX Image Studio &amp; Vision OCR</h3>
-            <p data-i18n="f4_desc">Run FLUX.2/3-klein, Z-Image-Turbo, Iris-3B, SANA-1.5 and Step1X-Edit locally with shared text encoders, TeaCache and live TAEF SSE previews, paired with DeepSeek-OCR-2 and PaddleOCR-VL-1.5 document perception.</p>
+            <span class="card-icon" aria-hidden="true">🎬</span>
+            <h3 data-i18n="f4_title">Phased 24 GB Video Studio, 2K Image Studio &amp; Vision OCR</h3>
+            <p data-i18n="f4_desc">Run LTX-2.5 AV-DiT, Kandinsky 6.0 CrossDiT, LingBot-Video MoE and Wan 2.2 locally with causal 3D-VAE, brick-tiled STA Metal kernels and AVAssetWriter .mp4 muxing — plus FLUX.3 4-stage compose, SeedVR2 upscaling, Z-Image-Turbo and DeepSeek-OCR-2.</p>
             <div class="tag-row">
-              <span class="chip">/v1/images/*</span>
-              <span class="chip">TeaCache + Judge</span>
+              <span class="chip">/v1/videos/*</span>
+              <span class="chip">FLUX.3 + SeedVR2</span>
               <span class="chip">DeepSeek-OCR-2</span>
             </div>
           </article>
 
           <article class="bento-card reveal-card" data-tone="emerald">
             <span class="card-icon" aria-hidden="true">🔬</span>
-            <h3 data-i18n="f5_title">Model X-Ray &amp; Zero-Token Belnap Epistemic Gate</h3>
-            <p data-i18n="f5_desc">Inspect Marchenko–Pastur spectra, per-head logit lens, complex MVN phasor probes, Fisher–Rao geodesic drift and four-valued Belnap evidence states on the SIXTEEN_3 trilattice before decoding a single token.</p>
+            <h3 data-i18n="f5_title">Model X-Ray, Token Risk, GQA Surgery &amp; HITL Governance</h3>
+            <p data-i18n="f5_desc">Inspect MACaQ layer manifests, per-token logprobs &amp; hallucination risk (/v1/xray/tokens), Score d’influence head attribution, GQA group patching, cognitive nullspace, Belnap SIXTEEN_3 epistemic gating, LANTERN semantic cache and HITL MCP approvals (/v1/mcp/approvals).</p>
             <div class="tag-row">
-              <span class="chip">SIXTEEN_3 Trilattice</span>
-              <span class="chip">Reversible Overlays</span>
-              <span class="chip">OpenMetrics ECE</span>
+              <span class="chip">/v1/xray/tokens</span>
+              <span class="chip">HITL + LAAS-CNRS</span>
+              <span class="chip">Score d’influence</span>
             </div>
           </article>
 
@@ -542,17 +557,17 @@ basalt compose up 256gb-coding-agent</code></pre>
 
         <div class="bench-grid">
           <div class="stat-card reveal-card">
-            <div class="stat-number" style="color: var(--cobalt);">3.45–3.62×</div>
-            <strong data-i18n="b1_title">Code Edit Speedup on Gemma 4 12B</strong>
-            <div class="bar-track"><div class="bar-fill" style="inline-size: 92%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b1_desc">Exact staged KV-round prompt lookup (18.7 → 64.6 tok/s) with identical greedy output (#265).</span>
+            <div class="stat-number" style="color: var(--cobalt);">3.41× · +82%</div>
+            <strong data-i18n="b1_title">Single-Pass MACaQ MoE Switch WHT (#628)</strong>
+            <div class="bar-track"><div class="bar-fill" style="inline-size: 94%;"></div></div>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b1_desc">Gemma 4 26B-A4B MoE kernel drops 2.06 → 0.60 ms (+82% end-to-end); Ornith 35B-A3B MACaQ hits 64–75 tok/s (#628).</span>
           </div>
 
           <div class="stat-card reveal-card">
-            <div class="stat-number" style="color: var(--amber);">−72.1% PPL</div>
-            <strong data-i18n="b2_title">QTIP Bitshift Trellis at 2.0–2.5 bpw</strong>
-            <div class="bar-track"><div class="bar-fill" style="inline-size: 86%;"></div></div>
-            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b2_desc">Qwen3.8-27B in 8.48 GB cuts 2-bit PPL from 19.15 to 5.35, and 2.5 bpw beats 3-bit affine (#494).</span>
+            <div class="stat-number" style="color: var(--amber);">+52% · −33% RAM</div>
+            <strong data-i18n="b2_title">PV-MACaQ 4-bit Exact Parity &amp; 31B on 24 GB</strong>
+            <div class="bar-track"><div class="bar-fill" style="inline-size: 90%;"></div></div>
+            <span style="font-size: 0.84rem; color: var(--text-muted);" data-i18n="b2_desc">Qwen3.5-9B PV-MACaQ hits 43.2 tok/s p50 at 4/5 8-bit parity; Gemma-4-31B 3.2 bpw runs 4/5 Ladder in 15.1 GB (#545, #630).</span>
           </div>
 
           <div class="stat-card reveal-card">
@@ -579,11 +594,38 @@ basalt compose up 256gb-coding-agent</code></pre>
       <div class="container">
         <div class="section-head">
           <span class="section-kicker" data-i18n="hf_kicker">GOODMAI HUGGING FACE COLLECTION · 1-CLICK LAUNCH</span>
-          <h2 class="section-title" data-i18n="hf_title">50+ Verified Checkpoints Ready to Launch in One Click</h2>
+          <h2 class="section-title" data-i18n="hf_title">55+ Verified Checkpoints Ready to Launch in One Click</h2>
           <p class="section-sub" data-i18n="hf_sub">Every checkpoint in huggingface.co/goodmai ships with a one-click Basalt.app deep link and verified CLI command.</p>
         </div>
 
         <div class="models-grid">
+          <article class="model-card reveal-card">
+            <h3>goodmai/gemma-4-31B-it-PV-MACaQ-3.2bpw-MLX</h3>
+            <p data-i18n="m8_desc">31B dense on a 24 GB Mac (15.1 GB, 14.1 tok/s p50, Ladder 4/5 + Lunar 4/6) where 4-bit OOMs.</p>
+            <div class="model-actions">
+              <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2Fgemma-4-31B-it-PV-MACaQ-3.2bpw-MLX&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
+              <a class="btn btn-sm" href="https://huggingface.co/goodmai/gemma-4-31B-it-PV-MACaQ-3.2bpw-MLX" target="_blank" rel="noopener">🤗 HF Card</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3>goodmai/Ornith-1.5-35B-A3B-MACaQ-3bit-MLX</h3>
+            <p data-i18n="m9_desc">35B MoE (A3B) 3-bit MACaQ in 14.6 GB at 64–75 tok/s via single-pass switch WHT (#628).</p>
+            <div class="model-actions">
+              <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FOrnith-1.5-35B-A3B-MACaQ-3bit-MLX&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
+              <a class="btn btn-sm" href="https://huggingface.co/goodmai/Ornith-1.5-35B-A3B-MACaQ-3bit-MLX" target="_blank" rel="noopener">🤗 HF Card</a>
+            </div>
+          </article>
+
+          <article class="model-card reveal-card">
+            <h3>goodmai/Qwen3.8-27B-PV-MACaQ-4bit-Affine-MLX</h3>
+            <p data-i18n="m10_desc">27B PV-MACaQ 4-bit (15.3 GB, 11.6 tok/s p50, PPL 1.23, MSE −19.5%, Ladder 4/5 on 24 GB Mac).</p>
+            <div class="model-actions">
+              <a class="btn btn-sm btn-primary" href="https://goodmai-run-with-basalt.static.hf.space/?model=goodmai%2FQwen3.8-27B-PV-MACaQ-4bit-Affine-MLX&amp;role=chat" target="_blank" rel="noopener">▶ Basalt</a>
+              <a class="btn btn-sm" href="https://huggingface.co/goodmai/Qwen3.8-27B-PV-MACaQ-4bit-Affine-MLX" target="_blank" rel="noopener">🤗 HF Card</a>
+            </div>
+          </article>
+
           <article class="model-card reveal-card">
             <h3>goodmai/gemma-4-12B-it-qat-4bit</h3>
             <p data-i18n="m1_desc">Daily-driver 12B QAT multimodal chat and vision model (~7.6 GB on 24 GB Mac).</p>
@@ -649,7 +691,7 @@ basalt compose up 256gb-coding-agent</code></pre>
         </div>
 
         <div style="margin-block-start: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a class="btn btn-hf" href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="hf_browse_all">🤗 Browse all 50+ models in the Hugging Face Collection →</a>
+          <a class="btn btn-hf" href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="hf_browse_all">🤗 Browse all 55+ models in the Hugging Face Collection →</a>
           <a class="btn" href="https://huggingface.co/Bosalt" target="_blank" rel="noopener" data-i18n="hf_bosalt_org">Bosalt Org on HF →</a>
         </div>
       </div>
@@ -661,7 +703,7 @@ basalt compose up 256gb-coding-agent</code></pre>
     <section class="deferred-section" id="research">
       <div class="container">
         <div class="section-head">
-          <span class="section-kicker" data-i18n="res_kicker">OPEN SCIENCE · 85+ PAPERS ACROSS 6 GLOBAL RESEARCH TRADITIONS</span>
+          <span class="section-kicker" data-i18n="res_kicker">OPEN SCIENCE · 95+ PAPERS ACROSS GLOBAL RESEARCH TRADITIONS</span>
           <h2 class="section-title" data-i18n="res_title">Mathematical &amp; Scientific Research Foundations</h2>
           <p class="section-sub" data-i18n="res_sub">Every Metal kernel, lattice quantizer, KV compressor, speculative verifier and epistemic gate in Basalt builds directly upon peer-reviewed mathematics and open preprints — with deep gratitude to their authors.</p>
         </div>
@@ -724,7 +766,7 @@ basalt compose up 256gb-coding-agent</code></pre>
             <h3 data-i18n="r6_title">Gratitude to Researchers &amp; Open Science</h3>
             <p data-i18n="r6_desc">Sincere thanks to Apple MLX, Cornell RelaxML, Huawei CSL &amp; Noah’s Ark, IST Austria, MSU / MIAN / MIPT, Tsinghua, DeepSeek-AI, Google Research, Science Tokyo / UEC / Doshisha, Chung-Ang / Kangwon / Nota AI, ggml &amp; Hugging Face.</p>
             <div class="model-actions">
-              <a class="btn btn-sm btn-primary" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" target="_blank" rel="noopener" data-i18n="res_cta_doc">📖 Full Bibliography &amp; Proofs (85+ Works) →</a>
+              <a class="btn btn-sm btn-primary" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" data-doc="research-foundations.md" target="_blank" rel="noopener" data-i18n="res_cta_doc">📖 Full Bibliography &amp; Proofs (95+ Works) →</a>
             </div>
           </article>
         </div>
@@ -742,57 +784,57 @@ basalt compose up 256gb-coding-agent</code></pre>
         </div>
 
         <div class="docs-grid" style="margin-block-end: 2.75rem;">
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/install.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/install.md" data-doc="install.md" target="_blank" rel="noopener">
             <strong data-i18n="d1_title">Install &amp; Requirements</strong>
             <span data-i18n="d1_desc">Homebrew tap, building with Xcode 27 / Swift 6.4, MetalToolchain &amp; ./basalt-claude</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/compose.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/compose.md" data-doc="compose.md" target="_blank" rel="noopener">
             <strong data-i18n="d2_title">basalt compose Reference</strong>
-            <span data-i18n="d2_desc">YAML v2, 89 hardware profiles, speak:, imagine:, epistemic gate, adapters &amp; bench</span>
+            <span data-i18n="d2_desc">YAML v2.2, 89 profiles, Video/Voice/Music, LANTERN cache, HITL, UMA L0/L1/L2 &amp; bench</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/rest-api.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/rest-api.md" data-doc="rest-api.md" target="_blank" rel="noopener">
             <strong data-i18n="d3_title">REST API &amp; OpenAPI</strong>
-            <span data-i18n="d3_desc">OpenAI, Anthropic /v1/messages, /v1/audio/speech, /v1/images/*, SSE &amp; OpenMetrics</span>
+            <span data-i18n="d3_desc">OpenAI, Anthropic, /v1/videos/*, /v1/audio/*, /v1/models/convert, /v1/xray/tokens &amp; /v1/mcp/approvals</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/integrations.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/integrations.md" data-doc="integrations.md" target="_blank" rel="noopener">
             <strong data-i18n="d4_title">Integrations: Claude Code &amp; MCP</strong>
             <span data-i18n="d4_desc">Claude Code, Cursor, Claude Desktop, OpenCode, Cline &amp; --mcp-enable / --mcp-disable</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/commands.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/commands.md" data-doc="commands.md" target="_blank" rel="noopener">
             <strong data-i18n="d5_title">CLI Commands &amp; serve Flags</strong>
-            <span data-i18n="d5_desc">QTIP, PV-Tuning, distillation, prompt cache, CacheBlend, MTP, GGUF convert &amp; KV zones</span>
+            <span data-i18n="d5_desc">Universal Converter (PV-MACaQ, FlatQuant, QTIP, E8P, QAT), --video-model, CacheBlend &amp; KV zones</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/mac-app.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/mac-app.md" data-doc="mac-app.md" target="_blank" rel="noopener">
             <strong data-i18n="d6_title">Basalt for Mac (Basalt.app)</strong>
-            <span data-i18n="d6_desc">Compose Profiles (⌥⌘C), Quick Ask (⌥Space), duplex voice, 2K Canvas &amp; notarized DMG</span>
+            <span data-i18n="d6_desc">Video Studio, ConvertModelSheet, Compose Profiles (⌥⌘C), Quick Ask (⌥Space), duplex voice &amp; 2K Canvas</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md" data-doc="research-tools.md" target="_blank" rel="noopener">
             <strong data-i18n="d7_title">Model X-Ray &amp; Weight Surgery</strong>
-            <span data-i18n="d7_desc">Live spectra, activation contrast, steering, reversible weight overlays &amp; KL gates</span>
+            <span data-i18n="d7_desc">MACaQ describe, Gemma BOS trace, Score d’influence, GQA patching, MAO-SNMF &amp; HITL governance</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/architecture.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/architecture.md" data-doc="architecture.md" target="_blank" rel="noopener">
             <strong data-i18n="d8_title">Architecture &amp; Modules</strong>
-            <span data-i18n="d8_desc">Value Core / Actor Shell split, Swift 6.4 RawSpan / UniqueArray &amp; zero-hatch concurrency</span>
+            <span data-i18n="d8_desc">BasaltFoundationModels SDK, VideoRunnerCore, TieredKVHierarchyCore &amp; Swift 6.4 zero-hatch concurrency</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/models.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/models.md" data-doc="models.md" target="_blank" rel="noopener">
             <strong data-i18n="d9_title">Supported Models &amp; Families</strong>
-            <span data-i18n="d9_desc">Gemma 4, Qwen3.6/3.8, Meta Muse Glimmer 30B, Flint, Bonsai, ZONOS3-Mini &amp; OCR models</span>
+            <span data-i18n="d9_desc">Gemma 4 31B 3.2 bpw, Qwen3.5/3.8 PV-MACaQ, Ornith 35B, LTX-2.5, Kandinsky 6.0, LFM2.5-Audio &amp; ZONOS3</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/pipelines.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/pipelines.md" data-doc="pipelines.md" target="_blank" rel="noopener">
             <strong data-i18n="d10_title">Multimodal Pipelines</strong>
-            <span data-i18n="d10_desc">Vision OCR, ASR transcription, 44.1 kHz TTS speech &amp; local image synthesis chains</span>
+            <span data-i18n="d10_desc">Vision OCR, ASR transcription, 44.1 kHz TTS speech, Video Studio &amp; local image synthesis chains</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/benchmarks.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/benchmarks.md" data-doc="benchmarks.md" target="_blank" rel="noopener">
             <strong data-i18n="d11_title">Benchmarks &amp; Golden Fixtures</strong>
-            <span data-i18n="d11_desc">Reproducible M4 Pro measurements, perplexity gates and golden reference logits</span>
+            <span data-i18n="d11_desc">Reproducible M4 Pro Ladder &amp; PV-MACaQ measurements, perplexity gates and golden reference logits</span>
           </a>
           <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
             <strong data-i18n="d12_title">Release Notes (CHANGELOG)</strong>
-            <span data-i18n="d12_desc">Detailed v0.11.0 changelog with measured throughput, memory and perplexity tables</span>
+            <span data-i18n="d12_desc">Detailed changelog with measured throughput, memory and perplexity tables</span>
           </a>
-          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" target="_blank" rel="noopener">
+          <a class="doc-card reveal-card" href="https://github.com/goodmai/basalt/blob/main/docs/research-foundations.md" data-doc="research-foundations.md" target="_blank" rel="noopener">
             <strong data-i18n="d13_title">Research Foundations &amp; Gratitude</strong>
-            <span data-i18n="d13_desc">85+ cited papers, mathematical proofs across 9 domains and acknowledgements to authors</span>
+            <span data-i18n="d13_desc">95+ cited papers, mathematical proofs across 10 domains and acknowledgements to authors</span>
           </a>
         </div>
 
@@ -864,12 +906,12 @@ open .build/Basalt.app</code></pre>
     <div class="container footer-inner">
       <div>
         <strong>Basalt v0.11.0</strong> · MIT © 2026 <a href="https://github.com/goodmai" target="_blank" rel="noopener">goodmai</a>
-        <span style="opacity: 0.78; margin-inline-start: 0.5rem;" data-i18n="footer_counts">· 89 Compose Profiles · 50+ Verified Models (45+ on goodmai HF)</span>
+        <span style="opacity: 0.78; margin-inline-start: 0.5rem;" data-i18n="footer_counts">· 89 Compose Profiles · 55+ Verified Models (goodmai HF)</span>
       </div>
       <div class="footer-links">
         <a href="#compose" data-i18n="footer_compose">89 Compose Profiles</a>
-        <a href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="footer_models">HF Models (50+)</a>
-        <a href="https://github.com/goodmai/basalt/blob/main/README.md" target="_blank" rel="noopener">English Docs (README)</a>
+        <a href="https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc" target="_blank" rel="noopener" data-i18n="footer_models">HF Models (55+)</a>
+        <a href="https://github.com/goodmai/basalt/blob/main/README.md" data-readme="1" target="_blank" rel="noopener" data-i18n="footer_readme">Docs (README)</a>
         <a href="https://github.com/goodmai/basalt" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/goodmai/basalt/releases/tag/v0.11.0" target="_blank" rel="noopener">Release v0.11.0</a>
         <a href="https://goodmai-run-with-basalt.static.hf.space/" target="_blank" rel="noopener">Run with Basalt (HF Space)</a>
