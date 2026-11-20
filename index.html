@@ -559,6 +559,45 @@ basalt compose up 256gb-coding-agent</code></pre>
           <p class="section-sub" data-i18n="bench_sub">Every benchmark claim links directly to its pull request, golden fixture and runner log in goodmai/basalt.</p>
         </div>
 
+        <div class="lunar-feature reveal-card">
+          <span class="section-kicker" data-i18n="lunar_kicker">KILLER FEATURE · v0.12 · UNCENSORED 27B IN 11.5 GB</span>
+          <h3 class="lunar-title" data-i18n="lunar_title">A 3-bit abliterated 27B that computes a Moon landing on a 24 GB MacBook</h3>
+          <p class="lunar-sub" data-i18n="lunar_sub">Qwen3.8-27B-Heretic in PV-MACaQ 3-bit passes all 5 rungs of the Official Ladder, lunar mission included, at 16.7 tok/s. The stock 4-bit build stops at 4/5 and 11.6 tok/s.</p>
+          <div class="lunar-body">
+            <ul class="lunar-points">
+              <li data-i18n="lunar_task">The task. Launch from Alcântara on 2027-09-29, a three-stage rocket, a four-body transfer, braking at the Moon and a throttled soft landing. Every constant is given; the reference values are hidden from the model.</li>
+              <li data-i18n="lunar_check">The check. The grader runs the model's code: exhaust velocity from √(2ηQ) for three stages (3,366 / 4,010 / 3,943 m/s), Tsiolkovsky Δv of 5,063 + 6,177 + 3,724 = 14,964 m/s within 0.1%, and all four mission stages implemented. Result: 6/6 invariants.</li>
+              <li data-i18n="lunar_cost">The cost. One 8,192-token answer in 575 s at 14.2 tok/s, with 43% of drafted tokens accepted by prompt lookup. 11.5 GB of weights, 13.6 GB peak GPU memory.</li>
+            </ul>
+            <div class="lunar-table-wrap">
+              <table class="lunar-table">
+                <thead>
+                  <tr>
+                    <th scope="col" data-i18n="lunar_th_model">Model</th>
+                    <th scope="col" data-i18n="lunar_th_ram">Weights in RAM</th>
+                    <th scope="col" data-i18n="lunar_th_ladder">Official Ladder</th>
+                    <th scope="col" data-i18n="lunar_th_decode">Decode p50</th>
+                    <th scope="col" data-i18n="lunar_th_draft">Draft acceptance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Qwen3.8-27B 4-bit</th><td>15.3 GB</td><td>4/5</td><td>11.6 tok/s</td><td>0%</td></tr>
+                  <tr><th scope="row">Qwen3.8-27B PV-MACaQ 3-bit</th><td>12.4 GB</td><td>5/5 · lunar 6/6</td><td>15.6 tok/s</td><td>50.6%</td></tr>
+                  <tr class="lunar-hit"><th scope="row">Qwen3.8-27B-Heretic PV-MACaQ 3-bit</th><td>11.5 GB</td><td>5/5 · lunar 6/6</td><td>16.7 tok/s</td><td>43.0%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="code-box copyable" style="margin-block: 1rem 0.75rem;">
+            <span class="copy">
+              <button type="button" class="copy-button" command="--copy" commandfor="lunar-cmd" aria-label="Copy command"><span class="icon-copy" aria-hidden="true">⧉</span><span class="icon-check" aria-hidden="true">✓</span><span>Copy</span></button>
+              <span class="tip" role="status"></span>
+            </span>
+            <pre><code id="lunar-cmd">basalt serve --model goodmai/Qwen3.8-27B-Heretic-PV-MACaQ-3bit-Affine-MLX --speculative-lookup --rest</code></pre>
+          </div>
+          <p class="lunar-note" data-i18n="lunar_note">Measured on an M4 Pro with 24 GB, release build, one GPU job at a time. The lunar rung scores invariants of the program the model writes, not a flown trajectory. Not measured yet: the 4-bit Heretic and a side-by-side with llama.cpp GGUF.</p>
+        </div>
+
         <div class="bench-grid">
           <div class="stat-card reveal-card">
             <div class="stat-number" style="color: var(--cobalt);">3.41× · +82%</div>

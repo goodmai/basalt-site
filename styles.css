@@ -1568,3 +1568,35 @@ dialog::backdrop {
   gap: 1.15rem;
   flex-wrap: wrap;
 }
+
+.lunar-feature {
+  padding: clamp(1.1rem, 3vw, 1.75rem);
+  border-radius: 22px;
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--border-strong);
+  margin-block-end: 1.25rem;
+}
+.lunar-title {
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-block: 0.5rem 0.4rem;
+  text-wrap: balance;
+}
+.lunar-sub, .lunar-note { color: var(--text-muted); margin: 0; }
+.lunar-note { font-size: 0.84rem; }
+.lunar-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 1.25rem;
+  margin-block-start: 1rem;
+  align-items: start;
+}
+.lunar-points { margin: 0; padding-inline-start: 1.1rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+.lunar-table-wrap { overflow-x: auto; }
+.lunar-table { inline-size: 100%; border-collapse: collapse; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.lunar-table th, .lunar-table td { padding: 0.5rem 0.6rem; text-align: start; border-block-end: 1px solid var(--border-subtle); }
+.lunar-table thead th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; }
+.lunar-table tbody th { font-weight: 600; }
+.lunar-hit th, .lunar-hit td { color: var(--emerald); font-weight: 700; border-block-end: 0; }
+.lunar-table td { white-space: nowrap; }
