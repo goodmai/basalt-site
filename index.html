@@ -588,6 +588,25 @@ basalt compose up 256gb-coding-agent</code></pre>
               </table>
             </div>
           </div>
+          <h4 class="lunar-speed-title" data-i18n="lunar_speed_title">Decode speed, tokens per second</h4>
+          <div class="lunar-table-wrap">
+            <table class="lunar-table">
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="lunar_speed_th_model">Model and engine</th>
+                  <th scope="col" data-i18n="lunar_speed_th_plain">Plain decode</th>
+                  <th scope="col" data-i18n="lunar_speed_th_draft">With draft tokens, code edits</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Heretic IQ3_S · llama.cpp</th><td>11.3</td><td>19.0 · ngram-simple</td></tr>
+                <tr class="lunar-hit"><th scope="row">Heretic PV-MACaQ 3-bit · basalt</th><td>17.1</td><td>22.7 · --speculative-lookup</td></tr>
+                <tr><th scope="row">Heretic PV-MACaQ 4-bit · basalt</th><td>15.2</td><td>19.7 · 26.2 with smallm</td></tr>
+                <tr><th scope="row">Gemma 4 12B QAT 4-bit · basalt</th><td>20.1</td><td>43.9 · --speculative-lookup</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="lunar-note" data-i18n="lunar_speed_note">220 generated tokens at temperature 0.7, two seeds, wall clock including prefill, one Mac, one session. Draft tokens do not speed up prose (about 17 tok/s on the 3-bit Heretic with and without). Heretic 4-bit reaches 26.2 tok/s on code edits with --experimental-smallm-kernel.</p>
           <div class="code-box copyable" style="margin-block: 1rem 0.75rem;">
             <span class="copy">
               <button type="button" class="copy-button" command="--copy" commandfor="lunar-cmd" aria-label="Copy command"><span class="icon-copy" aria-hidden="true">⧉</span><span class="icon-check" aria-hidden="true">✓</span><span>Copy</span></button>
@@ -595,7 +614,7 @@ basalt compose up 256gb-coding-agent</code></pre>
             </span>
             <pre><code id="lunar-cmd">basalt serve --model goodmai/Qwen3.8-27B-Heretic-PV-MACaQ-3bit-Affine-MLX --speculative-lookup --rest</code></pre>
           </div>
-          <p class="lunar-note" data-i18n="lunar_note">Measured on an M4 Pro with 24 GB, release build, one GPU job at a time. The lunar rung scores invariants of the program the model writes, not a flown trajectory. Not measured yet: the 4-bit Heretic and a side-by-side with llama.cpp GGUF.</p>
+          <p class="lunar-note" data-i18n="lunar_note">Measured on an M4 Pro with 24 GB, release build, one GPU job at a time, one run per cell. The lunar rung scores invariants of the program the model writes, not a flown trajectory, and it varies between runs: Heretic 4-bit passed it once and failed once, and llama.cpp did the same in the opposite order.</p>
         </div>
 
         <div class="bench-grid">

@@ -1600,3 +1600,5 @@ dialog::backdrop {
 .lunar-table tbody th { font-weight: 600; }
 .lunar-hit th, .lunar-hit td { color: var(--emerald); font-weight: 700; border-block-end: 0; }
 .lunar-table td { white-space: nowrap; }
+.lunar-speed-title { font-size: 1rem; margin-block: 1.1rem 0.5rem; }
+.lunar-speed-title + .lunar-table-wrap { margin-block-end: 0.5rem; }
