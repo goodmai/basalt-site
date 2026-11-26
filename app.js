@@ -311,7 +311,7 @@ motionBtn?.addEventListener('click', () => {
   volcanoSky?.syncMotionState();
 });
 
-// 10. Accessible Tabbed 84 Compose Profiles Explorer (selection follows focus + hidden="until-found")
+// 10. Accessible Tabbed 118 Compose Profiles Explorer (selection follows focus + hidden="until-found")
 for (const container of document.querySelectorAll('.tabs-shell')) {
   const tablist = container.querySelector('[focusgroup]');
   if (!tablist) continue;

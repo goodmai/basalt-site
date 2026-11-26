@@ -2,13 +2,13 @@
 
 # Basalt Landing Page (`goodmai/basalt-site`)
 
-Official multilingual (6 UN languages, English default) animated landing page for **[Basalt v0.11.0](https://github.com/goodmai/basalt)** — native Swift 6.4 open-weight AI lab for Apple Silicon (`MLX` + `ANE`, `OpenAI` + `Anthropic` + `MCP`, 84 hardware-tiered Compose profiles, `Muse-Glimmer-30B`, `ZONOS3-Mini` 44.1 kHz neural TTS, and `Basalt.app` for macOS 27 Liquid Glass).
+Official multilingual (8 languages, English default) animated landing page for **[Basalt v0.13.0](https://github.com/goodmai/basalt)** — native Swift 6.4 open-weight AI lab for Apple Silicon (`MLX` + `ANE`, `OpenAI` + `Anthropic` + `MCP`, Inkling 2 Mini looped MoE, NVFP4 & automatic ModelOpt import, PEFT LoRA, 118 hardware-tiered Compose profiles, `ZONOS3-Mini` 44.1 kHz neural TTS, Video Studio, and `Basalt.app` for macOS 27 Liquid Glass).
 
 - **Official Website (Vercel)**: [https://bas-alt.vercel.app](https://bas-alt.vercel.app)
 - **GitHub Pages Mirror**: [https://goodmai.github.io/basalt-site/](https://goodmai.github.io/basalt-site/)
-- **Basalt Codebase & Releases**: [https://github.com/goodmai/basalt](https://github.com/goodmai/basalt) ([v0.11.0](https://github.com/goodmai/basalt/releases/tag/v0.11.0))
+- **Basalt Codebase & Releases**: [https://github.com/goodmai/basalt](https://github.com/goodmai/basalt) ([v0.13.0](https://github.com/goodmai/basalt/releases/tag/v0.13.0))
 - **1-Click Hugging Face Launcher**: [https://goodmai-run-with-basalt.static.hf.space/](https://goodmai-run-with-basalt.static.hf.space/)
-- **Verified Models Collection (`42+`)**: [huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack](https://huggingface.co/collections/goodmai/basalt-inference-and-quantization-stack-6af94bed95c64cce97e188fc)
+- **Verified Models Collection (`65+`)**: [huggingface.co/collections/goodmai/basalt-v0130-inference-speech-and-quantization-stack](https://huggingface.co/collections/goodmai/basalt-v0130-inference-speech-and-quantization-stack-6af94bed95c64cce97e188fc)
 
 ## Modern Web Platform Standards
 
