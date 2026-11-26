@@ -2,7 +2,7 @@
 
 # Basalt Landing Page (`goodmai/basalt-site`)
 
-Official multilingual (8 languages, English default) animated landing page for **[Basalt v0.13.0](https://github.com/goodmai/basalt)** — native Swift 6.4 open-weight AI lab for Apple Silicon (`MLX` + `ANE`, `OpenAI` + `Anthropic` + `MCP`, Inkling 2 Mini looped MoE, NVFP4 & automatic ModelOpt import, PEFT LoRA, 118 hardware-tiered Compose profiles, `ZONOS3-Mini` 44.1 kHz neural TTS, Video Studio, and `Basalt.app` for macOS 27 Liquid Glass).
+Official multilingual (8 languages, English default) animated landing page for **[Basalt v0.13.0](https://github.com/goodmai/basalt)** — native Swift 6.4 open-weight AI lab for Apple Silicon (`MLX` + `ANE`, `OpenAI` + `Anthropic` + `MCP`, Inkling 2 Mini looped MoE, NVFP4 & automatic ModelOpt import, PEFT LoRA, 117 hardware-tiered Compose profiles, `ZONOS3-Mini` 44.1 kHz neural TTS, Video Studio, and `Basalt.app` for macOS 27 Liquid Glass).
 
 - **Official Website (Vercel)**: [https://bas-alt.vercel.app](https://bas-alt.vercel.app)
 - **GitHub Pages Mirror**: [https://goodmai.github.io/basalt-site/](https://goodmai.github.io/basalt-site/)
