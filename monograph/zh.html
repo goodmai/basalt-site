@@ -4577,8 +4577,12 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <tr>
 <td>LSTM 与 GRU</td>
 <td>1997, 2014; B.3</td>
-<td>尚未支持</td>
-<td>没有循环单元模型。未找到相关证据。</td>
+<td>部分支持</td>
+<td>只有 sLSTM，即带指数门控的 LSTM 单元，作为 <code>xlstm</code>
+的可选块存在（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMOps.swift"><code>XLSTMOps.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>）。它是合成的：没有任何公开检查点的布局，只在微型夹具上对照
+CPU 参考实现测试过。没有经典的 LSTM 或 GRU。</td>
 </tr>
 <tr>
 <td>带加性（Bahdanau）注意力的 Seq2Seq</td>
@@ -4753,30 +4757,41 @@ href="https://github.com/goodmai/basalt/issues/672">#672</a>）。</td>
 <tr>
 <td>门控 MLA（Kimi K3、Tencent Hy4）</td>
 <td>2026</td>
-<td>尚未支持</td>
-<td>未找到相关证据。</td>
+<td>部分支持</td>
+<td>带输出门、值门和 NoPE 的 <code>GatedMLAAttention</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/GatedMLAAttention.swift"><code>GatedMLAAttention.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>）在微型夹具上与
+CPU 参考实现一致，但没有任何模型类型使用它。bailing_hybrid 的 MLA 也接受
+NoPE 和输出门选项，但尚无真实权重运行（<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>）。没有运行过
+Kimi K3 或 Tencent Hy4 的检查点。</td>
 </tr>
 <tr>
 <td>原生稀疏注意力（NSA）</td>
 <td>2025</td>
 <td>部分支持</td>
-<td><a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>（<a
-href="https://github.com/goodmai/basalt/issues/551">#551</a>）是一个核心模块，只被
-<code>SageMXKVCache</code> 使用。<code>serve</code> 提供的是 MoBA 的
-top-k 块路由（<code>--attention-backend moba</code>，<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>），而不是
-NSA 的三个分支。</td>
+<td><code>--attention-backend nsa</code> 配合
+<code>--nsa-window</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/SageMXKVCache+NSA.swift"><code>SageMXKVCache+NSA.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>）运行三分支的实验性近似：均值池化压缩、经由
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>
+的 top-k
+块选择和滑动窗口，用固定门而不是训练得到的门混合。目前还没有真实模型的速度或困惑度表。</td>
 </tr>
 <tr>
 <td>带闪电索引器的 DeepSeek 稀疏注意力（DSA）</td>
 <td>2025; B.5</td>
-<td>尚未支持</td>
-<td>没有索引器代码。最接近的功能是 Quest 页面
-top-k（<code>--quest-top-k</code>，<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/QuestKVCache.swift"><code>QuestKVCache.swift</code></a>、<a
-href="https://github.com/goodmai/basalt/issues/33">#33</a>、<a
-href="https://github.com/goodmai/basalt/issues/280">#280</a>）。</td>
+<td>部分支持</td>
+<td>闪电索引器及其 top-k 稀疏注意力有 Metal 内核，在微型夹具上与 CPU
+参考实现一致（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexer.swift"><code>DSALightningIndexer.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexerMetal.swift"><code>DSALightningIndexerMetal.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>），bailing_hybrid
+可通过 <code>dsa_*</code> 配置键接入索引器。没有任何 40B
+及以下的开放检查点带有训练好的索引器权重，<code>--attention-backend dsa</code>
+也没有开放。</td>
 </tr>
 <tr>
 <td>CSA + HCA 压缩注意力（DeepSeek V4）</td>
@@ -4940,20 +4955,43 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernel
 <td>bailing_hybrid（Ling-3.0），带逐通道 KDA Metal 内核（<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/BailingHybrid/BailingHybridKDAKernel.swift"><code>BailingHybridKDAKernel.swift</code></a>、<a
 href="https://github.com/goodmai/basalt/issues/672">#672</a>）。<code>kimi_linear</code>
-模型类型本身未注册。</td>
+模型类型本身未注册。在真实权重上，<code>rapid-mlx/Ling-3.0-tiny-MLX-4bit</code>
+在散文上达到 1.09 比特/字节，在代码上达到 0.15（<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>、<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>）；其余 P3
+项（passkey、TTFT、release 吞吐量）仍未完成。</td>
 </tr>
 <tr>
 <td>第二代 SSM 与 delta 核心：Mamba-3（MIMO、复数转移）和 Gated
 DeltaNet-2</td>
 <td>2026; B.7</td>
-<td>尚未支持</td>
-<td>未找到相关证据。</td>
+<td>部分支持</td>
+<td><code>mamba3</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Mamba3/Mamba3Model.swift"><code>Mamba3Model.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/867">#867</a>）加载真实的
+<code>state-spaces/mamba3-mimo-187m</code> 权重（经过安全的
+<code>.bin</code> → safetensors 转换）并检查每个张量；在 float32
+下，其逐步解码与分块计算的结果相等（<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>）。困惑度未测量，因为该检查点使用受限访问的
+Llama-3.1 分词器。<code>gdn2</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/867">#867</a>）只在微型夹具上运行；不存在检查点。</td>
 </tr>
 <tr>
 <td>其他循环式语言模型：RWKV-4…7、RetNet、xLSTM/mLSTM</td>
 <td>2023–2025; B.3</td>
-<td>尚未支持</td>
-<td>未找到相关证据。</td>
+<td>部分支持</td>
+<td><code>rwkv7</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/RWKV7/RWKV7Model.swift"><code>RWKV7Model.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>）已在真实权重上运行：<code>fla-hub/rwkv7-2.9B-world</code>
+配合 RWKV World 分词器在散文上达到 1.02 比特/字节（<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>）。<code>xlstm</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMModel.swift"><code>XLSTMModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>）已在真实权重上运行：遵循
+<code>force_bos_token_insert</code> 后，<code>NX-AI/xLSTM-7b</code>
+在散文上达到约 1.01 比特/字节（<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>）。其 sLSTM
+块是合成的，没有检查点。不支持 RetNet。</td>
 </tr>
 <tr>
 <td>线性注意力与完整注意力 3:1 的混合（Qwen 3.5/3.8）</td>
@@ -4974,9 +5012,14 @@ href="https://github.com/goodmai/basalt/issues/521">#521</a>）</td>
 <tr>
 <td>测试时训练层：TTT、Titans、LaCT</td>
 <td>2024–2025; B.8</td>
-<td>尚未支持</td>
-<td>未找到相关证据。自我改写（<a
-href="https://github.com/goodmai/basalt/issues/676">#676</a>）在轮次之间编辑权重，而不是在层内部。</td>
+<td>部分支持</td>
+<td><code>ttt</code>（Linear 与
+MLP）、<code>titans</code>（MAC、MAG、MAL）和 <code>lact</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TTTModel.swift"><code>TTTModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TitansModel.swift"><code>TitansModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/LaCTModel.swift"><code>LaCTModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/867">#867</a>）在推理时于层内更新快速权重。它们在微型夹具上与标量
+CPU 参考实现一致；上游检查点布局既未映射也未运行。</td>
 </tr>
 </tbody>
 </table>
@@ -4994,9 +5037,14 @@ href="https://github.com/goodmai/basalt/issues/676">#676</a>）在轮次之间�
 <tr>
 <td>超连接（HC）、Birkhoff 多面体上的 mHC、iHC</td>
 <td>2024–2026; B.8</td>
-<td>尚未支持</td>
-<td>未找到相关证据。Sinkhorn–Knopp 只出现在权重归一化中（<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Quantization/SINQNormalizer.swift"><code>SINQNormalizer.swift</code></a>）。</td>
+<td>部分支持</td>
+<td><code>mhc</code>、<code>ihc</code> 和
+<code>hyper_connection</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/HyperConnection/HyperConnectionModel.swift"><code>HyperConnectionModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>），以 Metal
+实现到 Birkhoff 多面体的 Sinkhorn–Knopp 投影（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernels/HyperConnectionSinkhornKernel.swift"><code>HyperConnectionSinkhornKernel.swift</code></a>）。只在微型夹具上测试过；没有任何
+40B 及以下的开放检查点使用 mHC 或 iHC。</td>
 </tr>
 <tr>
 <td>注意力残差（AttnRes），沿深度方向的注意力</td>
@@ -5021,11 +5069,15 @@ href="https://github.com/goodmai/basalt/issues/650">#650</a>）。</td>
 <td>部分支持</td>
 <td>Huginn-0125（<code>huginn_raven</code>、<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>、<a
-href="https://github.com/goodmai/basalt/pull/838">#838</a>）与
-Ouro（<code>ouro</code>、<a
+href="https://github.com/goodmai/basalt/pull/838">#838</a>）、Ouro（<code>ouro</code>、<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>、<a
-href="https://github.com/goodmai/basalt/pull/832">#832</a>）可以配合真实权重运行。没有跨循环的流水线（Parallel
-Loop Transformer）。</td>
+href="https://github.com/goodmai/basalt/pull/832">#832</a>）和
+LoopCoder-V2（<code>iquestpltcoder</code>、<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/PLT/PLTModel.swift"><code>PLTModel.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/869">#869</a>）都在真实权重上运行；LoopCoder-V2
+在代码上 2 次循环的困惑度为 1.93，1 次循环为 15.5。PLT 的第 0 次循环共享
+KV 与门控滑动窗口已经实现，但各次循环依次执行（每个 token 的开销约为 1.6
+倍），因此跨循环并行本身并不存在。</td>
 </tr>
 <tr>
 <td>自适应停止（ACT）与提前退出门（Ouro）</td>
@@ -5109,21 +5161,30 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInf
 <td>其他优化器：AdaGrad、RMSProp、Adafactor、Shampoo/SOAP、8
 位优化器</td>
 <td>2011–2024; B.4</td>
-<td>尚未支持</td>
-<td>AdaGrad、RMSProp 和 Adafactor 随 <a
+<td>部分支持</td>
+<td><code>--optimizer soap</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/SOAPOptimizer.swift"><code>SOAPOptimizer.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/853">#853</a>）可训练 LoRA
+适配器，并已在 Gemma 4 12B 上运行（留出集 NLL 在 20 步内从 5.954 降到
+3.010）。AdaGrad、RMSProp 和 Adafactor 随 <a
 href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>
-一起提供，但 basalt 只构造 Adam 和 AdamW。对于 Shampoo、SOAP 或 8
+一起提供，但 basalt 不构造它们。对于独立的 Shampoo 或 8
 位状态，未找到相关证据。</td>
 </tr>
 <tr>
 <td>Muon 与 MuonClip（Newton–Schulz、QK-Clip）</td>
 <td>2024–2025; B.4</td>
-<td>尚未支持</td>
-<td><a
-href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>
-中有 <code>Muon</code>，但没有 basalt 训练器使用它。只有一个推理时的 q/k
-L2 裁剪，位于 Inkling 2（<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Attention.swift"><code>Inkling2Attention.swift</code></a>）。</td>
+<td>部分支持</td>
+<td><code>--optimizer muon</code> 在适配器训练器中运行带 Newton–Schulz
+迭代的匹配 RMS Muon（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/MatchedRMSMuonOptimizer.swift"><code>MatchedRMSMuonOptimizer.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>、<a
+href="https://github.com/goodmai/basalt/pull/853">#853</a>），并已在
+Gemma 4 12B 上运行（留出集 NLL 在 20 步内从 5.954 降到 3.530）。MuonClip
+的 QK-Clip（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/QKClipController.swift"><code>QKClipController.swift</code></a>）只在微型夹具上测试过：适配器训练器是唯一的训练路径，它们冻结
+<code>W_q</code> 和 <code>W_k</code>，因此拒绝
+<code>--optimizer muonclip</code>。</td>
 </tr>
 <tr>
 <td>LoRA</td>
@@ -5161,21 +5222,26 @@ href="https://github.com/goodmai/basalt/issues/394">#394</a>）</td>
 <tr>
 <td>DPO</td>
 <td>2023; B.11</td>
-<td>部分支持</td>
-<td>针对参考模型的 DPO 形式损失位于 <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>，并通过
-MCP <code>train_experts</code> 运行。离线的 <code>--dpo-pairs</code>
-被拒绝（<a
+<td>已支持</td>
+<td><code>basalt models train --dpo-pairs</code> 用离线 DPO 训练
+LoRA（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/OfflineDPOTrainer.swift"><code>OfflineDPOTrainer.swift</code></a>、<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ModelsTrainCommand.swift"><code>ModelsTrainCommand.swift</code></a>、<a
-href="https://github.com/goodmai/basalt/issues/617">#617</a>）。</td>
+href="https://github.com/goodmai/basalt/pull/840">#840</a>）。在 Gemma 4
+12B 上，4 步把偏好间隔从 0 提高到 4.74。DPO 形式的损失也可通过 MCP
+<code>train_experts</code> 运行（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>）。</td>
 </tr>
 <tr>
 <td>GRPO</td>
 <td>2024; B.11</td>
-<td>尚未支持</td>
-<td>rollout 曾计划在 <a
-href="https://github.com/goodmai/basalt/issues/566">#566</a>
-中实现。没有 GRPO 代码。</td>
+<td>部分支持</td>
+<td><code>basalt models train --grpo</code>（<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/GRPOTrainer.swift"><code>GRPOTrainer.swift</code></a>、<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>）执行组相对、带
+PPO 裁剪的更新，已在微型夹具上验证。Gemma 4 12B 的运行解出了所有算术
+rollout，因此每组优势都为零，没有应用任何更新（<a
+href="https://github.com/goodmai/basalt/issues/822">#822</a>）。</td>
 </tr>
 <tr>
 <td>可验证奖励的强化学习（DeepSeek-R1-Zero）</td>
@@ -5184,7 +5250,8 @@ href="https://github.com/goodmai/basalt/issues/566">#566</a>
 <td><code>train_experts</code> 只保留验证器接受的答案，训练一个
 LoRA，并在留出集的 KL 或 PPL 变差时回滚（<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInferenceEngine+LabTrain.swift"><code>MLXInferenceEngine+LabTrain.swift</code></a>、<a
-href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md#self-training-train_experts">研究工具</a>）。没有策略梯度更新。</td>
+href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md#self-training-train_experts">研究工具</a>）。基于可验证奖励的策略梯度更新可通过
+<code>--grpo</code> 进行，但尚未改变过真实权重（见 GRPO）。</td>
 </tr>
 <tr>
 <td>思维链、思考模式与测试时计算</td>
@@ -5795,12 +5862,14 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 K3、Tencent Hy4</td>
 <td>2025–2026</td>
 <td>尚未支持</td>
-<td>它们需要 DSA、CSA/HCA、门控 MLA 或 iHC。KDA 和 AttnRes
-分别存在（bailing_hybrid、Inkling 2）。</td>
+<td>这些系列没有对应的模型类型。DSA、门控 MLA 和 iHC
+只作为微型夹具上的机制存在（<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>），CSA/HCA
+不存在。KDA 和 AttnRes 分别存在（bailing_hybrid、Inkling 2）。</td>
 </tr>
 </tbody>
 </table>
-<p><strong>合计：120 行——已支持 54，部分支持 34，尚未支持 28，不适用
+<p><strong>合计：120 行——已支持 55，部分支持 43，尚未支持 18，不适用
 4。</strong></p>
 <h2 id="参考文献"><strong>参考文献</strong></h2>
 <p>参考文献索引收录了 <strong>445

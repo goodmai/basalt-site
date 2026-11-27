@@ -4725,8 +4725,13 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <tr>
 <td>LSTM وGRU</td>
 <td>1997, 2014; B.3</td>
-<td>غير مدعوم بعد</td>
-<td>لا يوجد نموذج بخلية تكرارية. لم يُعثر على أي دليل.</td>
+<td>جزئي</td>
+<td>يوجد فقط sLSTM، وهو خلية LSTM ببوابات أسّية، ككتلة اختيارية في
+<code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMOps.swift"><code>XLSTMOps.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>). وهي
+اصطناعية: ليس لها تخطيط مأخوذ من نقطة حفظ عامة، ولا تُختبر إلا على تجهيزة
+صغيرة مقابل مرجع على CPU. لا يوجد LSTM أو GRU تقليدي.</td>
 </tr>
 <tr>
 <td>Seq2Seq بانتباه جمعي (Bahdanau)</td>
@@ -4905,30 +4910,45 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <tr>
 <td>MLA المبوَّب (Kimi K3 وTencent Hy4)</td>
 <td>2026</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل.</td>
+<td>جزئي</td>
+<td>يطابق <code>GatedMLAAttention</code> ببوابات للمخرجات وللقيم وبلا
+ترميز موضعي (NoPE) (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/GatedMLAAttention.swift"><code>GatedMLAAttention.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) مرجعًا على
+CPU على تجهيزات صغيرة، لكن لا يستخدمه أي نوع نموذج. ويقبل MLA في
+bailing_hybrid أيضًا خياري NoPE وبوابة المخرجات، دون تشغيل بأوزان حقيقية
+حتى الآن (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>). لم تُشغَّل
+أي نقطة حفظ لـ Kimi K3 أو Tencent Hy4.</td>
 </tr>
 <tr>
 <td>الانتباه المتناثر الأصلي (NSA)</td>
 <td>2025</td>
 <td>جزئي</td>
-<td><a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>
-(<a href="https://github.com/goodmai/basalt/issues/551">#551</a>) نواة
-لا يستخدمها سوى <code>SageMXKVCache</code>. ويتيح <code>serve</code>
-توجيه كتل top-k على نمط MoBA (<code>--attention-backend moba</code>، <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>)،
-وليس فروع NSA الثلاثة.</td>
+<td>يشغّل <code>--attention-backend nsa</code> مع
+<code>--nsa-window</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>،
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/SageMXKVCache+NSA.swift"><code>SageMXKVCache+NSA.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) تقريبًا
+تجريبيًا للفروع الثلاثة: ضغط بالمتوسط، واختيار top-k للكتل عبر <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>،
+ونافذة منزلقة، تُمزج ببوابات ثابتة لا مدرَّبة. لا يوجد بعد جدول للسرعة أو
+الحيرة على نموذج حقيقي.</td>
 </tr>
 <tr>
 <td>الانتباه المتناثر في DeepSeek (DSA) بمفهرس البرق</td>
 <td>2025; B.5</td>
-<td>غير مدعوم بعد</td>
-<td>لا توجد شيفرة للمفهرس. أقرب ميزة هي top-k للصفحات في Quest
-(<code>--quest-top-k</code>، <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/QuestKVCache.swift"><code>QuestKVCache.swift</code></a>،
-<a href="https://github.com/goodmai/basalt/issues/33">#33</a>، <a
-href="https://github.com/goodmai/basalt/issues/280">#280</a>).</td>
+<td>جزئي</td>
+<td>لمفهرس البرق وانتباهه المتناثر top-k نوى Metal تطابق مرجعًا على CPU
+على تجهيزات صغيرة (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexer.swift"><code>DSALightningIndexer.swift</code></a>،
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexerMetal.swift"><code>DSALightningIndexerMetal.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>)، ويقبل
+bailing_hybrid مفهرسًا عبر مفاتيح الإعداد <code>dsa_*</code>. لا تحمل أي
+نقطة حفظ مفتوحة بحجم 40B أو أقل أوزان مفهرس مدرَّبة،
+و<code>--attention-backend dsa</code> غير متاح.</td>
 </tr>
 <tr>
 <td>الانتباه المضغوط CSA + HCA (DeepSeek V4)</td>
@@ -5096,20 +5116,48 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernel
 <td>bailing_hybrid (Ling-3.0) بنواة KDA على Metal لكل قناة (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/BailingHybrid/BailingHybridKDAKernel.swift"><code>BailingHybridKDAKernel.swift</code></a>،
 <a href="https://github.com/goodmai/basalt/issues/672">#672</a>). أما
-نوع النموذج <code>kimi_linear</code> نفسه فغير مسجَّل.</td>
+نوع النموذج <code>kimi_linear</code> نفسه فغير مسجَّل. على الأوزان
+الحقيقية يبلغ <code>rapid-mlx/Ling-3.0-tiny-MLX-4bit</code> 1.09 بت/بايت
+على النثر و0.15 على الشيفرة (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>، <a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>)؛ أما بنود P3
+المتبقية (passkey وTTFT وإنتاجية بناء release) فما زالت مفتوحة.</td>
 </tr>
 <tr>
 <td>الجيل الثاني من أنوية SSM ودلتا: Mamba-3 (MIMO، انتقالات مركّبة)
 وGated DeltaNet-2</td>
 <td>2026; B.7</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل.</td>
+<td>جزئي</td>
+<td>يحمّل <code>mamba3</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Mamba3/Mamba3Model.swift"><code>Mamba3Model.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) أوزان
+<code>state-spaces/mamba3-mimo-187m</code> الحقيقية (بعد تحويل آمن
+<code>.bin</code> → safetensors) مع التحقق من كل موتر، وفي float32 يساوي
+فكُّ ترميزه خطوةً بخطوة التمريرَ المقسَّم إلى كتل (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). لم تُقَس
+الحيرة (perplexity)، لأن نقطة الحفظ تستخدم مجزِّئ Llama-3.1 المقيَّد الوصول.
+أما <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) فلا يعمل
+إلا على تجهيزة صغيرة؛ ولا توجد نقطة حفظ.</td>
 </tr>
 <tr>
 <td>نماذج لغوية تكرارية أخرى: RWKV-4…7 وRetNet وxLSTM/mLSTM</td>
 <td>2023–2025; B.3</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل.</td>
+<td>جزئي</td>
+<td>يعمل <code>rwkv7</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/RWKV7/RWKV7Model.swift"><code>RWKV7Model.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) بأوزان
+حقيقية: يبلغ <code>fla-hub/rwkv7-2.9B-world</code> 1.02 بت/بايت على
+النثر مع المجزِّئ RWKV World (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). ويعمل
+<code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMModel.swift"><code>XLSTMModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) بأوزان
+حقيقية: يبلغ <code>NX-AI/xLSTM-7b</code> نحو 1.01 بت/بايت على النثر بعد
+احترام <code>force_bos_token_insert</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). أما كتلة
+sLSTM فيه فاصطناعية وليست لها نقطة حفظ. وRetNet غير مدعوم.</td>
 </tr>
 <tr>
 <td>هجين 3:1 من الانتباه الخطي والكامل (Qwen 3.5/3.8)</td>
@@ -5131,10 +5179,17 @@ href="https://github.com/goodmai/basalt/issues/521">#521</a>)</td>
 <tr>
 <td>طبقات التدريب وقت الاختبار: TTT وTitans وLaCT</td>
 <td>2024–2025; B.8</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل. إعادة الكتابة الذاتية (<a
-href="https://github.com/goodmai/basalt/issues/676">#676</a>) تعدّل
-الأوزان بين الأدوار، لا داخل الطبقة.</td>
+<td>جزئي</td>
+<td>تحدّث <code>ttt</code> (Linear وMLP) و<code>titans</code> (MAC وMAG
+وMAL) و<code>lact</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TTTModel.swift"><code>TTTModel.swift</code></a>،
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TitansModel.swift"><code>TitansModel.swift</code></a>،
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/LaCTModel.swift"><code>LaCTModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) أوزانًا
+سريعة داخل الطبقة وقت الاستدلال. وهي تطابق مراجع عددية على CPU على
+تجهيزات صغيرة؛ ولم يُربط أي تخطيط لنقاط الحفظ الأصلية ولم يُشغَّل.</td>
 </tr>
 </tbody>
 </table>
@@ -5152,9 +5207,15 @@ href="https://github.com/goodmai/basalt/issues/676">#676</a>) تعدّل
 <tr>
 <td>الوصلات الفائقة (HC)، وmHC على متعدد وجوه Birkhoff، وiHC</td>
 <td>2024–2026; B.8</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل. لا تظهر Sinkhorn–Knopp إلا في تطبيع الأوزان (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Quantization/SINQNormalizer.swift"><code>SINQNormalizer.swift</code></a>).</td>
+<td>جزئي</td>
+<td><code>mhc</code> و<code>ihc</code> و<code>hyper_connection</code>
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/HyperConnection/HyperConnectionModel.swift"><code>HyperConnectionModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>)، مع إسقاط
+Sinkhorn–Knopp على متعدد وجوه Birkhoff بنواة Metal (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernels/HyperConnectionSinkhornKernel.swift"><code>HyperConnectionSinkhornKernel.swift</code></a>).
+لا تُختبر إلا على تجهيزات صغيرة؛ ولا تستخدم أي نقطة حفظ مفتوحة بحجم 40B
+أو أقل mHC أو iHC.</td>
 </tr>
 <tr>
 <td>البواقي الانتباهية (AttnRes)، الانتباه على امتداد العمق</td>
@@ -5186,9 +5247,14 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <a href="https://github.com/goodmai/basalt/pull/838">#838</a>) وOuro
 (<code>ouro</code>، <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>،
-<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) مع أوزان
-حقيقية. ولا يوجد تسريب (pipelining) عبر الحلقات (Parallel Loop
-Transformer).</td>
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>)
+وLoopCoder-V2 (<code>iquestpltcoder</code>، <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/PLT/PLTModel.swift"><code>PLTModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/869">#869</a>) بأوزان
+حقيقية؛ ويبلغ LoopCoder-V2 حيرة 1.93 على الشيفرة بحلقتين مقابل 15.5
+بحلقة واحدة. التخزين المشترك لـ KV الحلقة 0 والنافذة المنزلقة المبوَّبة في
+PLT منفَّذان، لكن الحلقات تعمل واحدة بعد أخرى (نحو 1.6× كلفة الرمز)،
+فالتوازي عبر الحلقات نفسه غير موجود.</td>
 </tr>
 <tr>
 <td>التوقف التكيفي (ACT) وبوابات الخروج المبكر (Ouro)</td>
@@ -5277,21 +5343,31 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInf
 <td>مُحسِّنات أخرى: AdaGrad وRMSProp وAdafactor وShampoo/SOAP والمُحسِّنات ذات
 8 بتات</td>
 <td>2011–2024; B.4</td>
-<td>غير مدعوم بعد</td>
-<td>تأتي AdaGrad وRMSProp وAdafactor ضمن <a
+<td>جزئي</td>
+<td>يدرّب <code>--optimizer soap</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/SOAPOptimizer.swift"><code>SOAPOptimizer.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/853">#853</a>) محوّلات
+LoRA وقد شُغِّل على Gemma 4 12B (انخفض NLL على المجموعة المحجوزة من 5.954
+إلى 3.010 في 20 خطوة). تأتي AdaGrad وRMSProp وAdafactor ضمن <a
 href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>،
-لكن basalt لا يبني سوى Adam وAdamW. ولم يُعثر على دليل لـ Shampoo أو SOAP
-أو حالات 8 بتات.</td>
+لكن basalt لا يبنيها. ولم يُعثر على دليل لـ Shampoo مستقل أو لحالات 8
+بت.</td>
 </tr>
 <tr>
 <td>Muon وMuonClip (Newton–Schulz وQK-Clip)</td>
 <td>2024–2025; B.4</td>
-<td>غير مدعوم بعد</td>
-<td>يوجد <code>Muon</code> في <a
-href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>
-لكن لا يستخدمه أي مدرّب في basalt. ولا يوجد إلا قصّ L2 للمتجهين q/k وقت
-الاستدلال، في Inkling 2 (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Attention.swift"><code>Inkling2Attention.swift</code></a>).</td>
+<td>جزئي</td>
+<td>يشغّل <code>--optimizer muon</code> مُحسِّن Muon بجذر متوسط مربعات مطابَق
+وتكرارات Newton–Schulz (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/MatchedRMSMuonOptimizer.swift"><code>MatchedRMSMuonOptimizer.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>، <a
+href="https://github.com/goodmai/basalt/pull/853">#853</a>) في مدرّبات
+المحوّلات، وقد شُغِّل على Gemma 4 12B (انخفض NLL على المجموعة المحجوزة من
+5.954 إلى 3.530 في 20 خطوة). أما QK-Clip في MuonClip (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/QKClipController.swift"><code>QKClipController.swift</code></a>)
+فلا يُختبر إلا على تجهيزة صغيرة: مدرّبات المحوّلات، وهي مسار التدريب
+الوحيد، ترفض <code>--optimizer muonclip</code> لأنها تجمّد
+<code>W_q</code> و<code>W_k</code>.</td>
 </tr>
 <tr>
 <td>LoRA</td>
@@ -5330,21 +5406,28 @@ href="https://github.com/goodmai/basalt/issues/394">#394</a>)</td>
 <tr>
 <td>DPO</td>
 <td>2023; B.11</td>
-<td>جزئي</td>
-<td>توجد خسارة بصيغة DPO مقابل نموذج مرجعي في <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>
-وتعمل عبر أداة MCP <code>train_experts</code>. أما
-<code>--dpo-pairs</code> دون اتصال فمرفوض (<a
+<td>مدعوم</td>
+<td>يدرّب <code>basalt models train --dpo-pairs</code> محوّل LoRA بـ DPO
+دون اتصال (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/OfflineDPOTrainer.swift"><code>OfflineDPOTrainer.swift</code></a>،
+<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ModelsTrainCommand.swift"><code>ModelsTrainCommand.swift</code></a>،
-<a href="https://github.com/goodmai/basalt/issues/617">#617</a>).</td>
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>). على
+Gemma 4 12B رفعت 4 خطوات هامش التفضيل من 0 إلى 4.74. وتعمل خسارة بصيغة
+DPO أيضًا عبر أداة MCP <code>train_experts</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>).</td>
 </tr>
 <tr>
 <td>GRPO</td>
 <td>2024; B.11</td>
-<td>غير مدعوم بعد</td>
-<td>خُطِّط للـ rollouts في <a
-href="https://github.com/goodmai/basalt/issues/566">#566</a>. ولا توجد
-شيفرة GRPO.</td>
+<td>جزئي</td>
+<td>يطبّق <code>basalt models train --grpo</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/GRPOTrainer.swift"><code>GRPOTrainer.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) تحديثات
+نسبية للمجموعة مع قصّ PPO، تحقَّق منها على تجهيزة صغيرة. في تشغيل Gemma 4
+12B حُلّت كل الـ rollouts الحسابية، فكانت الميزة صفرًا في كل مجموعة ولم
+يُطبَّق أي تحديث (<a
+href="https://github.com/goodmai/basalt/issues/822">#822</a>).</td>
 </tr>
 <tr>
 <td>التعلم المعزَّز بمكافآت قابلة للتحقق (DeepSeek-R1-Zero)</td>
@@ -5355,7 +5438,8 @@ href="https://github.com/goodmai/basalt/issues/566">#566</a>. ولا توجد
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInferenceEngine+LabTrain.swift"><code>MLXInferenceEngine+LabTrain.swift</code></a>،
 <a
 href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md#self-training-train_experts">أدوات
-البحث</a>). لا يوجد تحديث بتدرّج السياسة.</td>
+البحث</a>). توجد تحديثات بتدرّج السياسة على مكافآت قابلة للتحقق عبر
+<code>--grpo</code>، لكنها لم تغيّر أوزانًا حقيقية بعد (انظر GRPO).</td>
 </tr>
 <tr>
 <td>سلسلة الأفكار وأنماط التفكير وحوسبة وقت الاختبار</td>
@@ -6002,12 +6086,15 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 V4 Pro وKimi K3 وTencent Hy4</td>
 <td>2025–2026</td>
 <td>غير مدعوم بعد</td>
-<td>تحتاج إلى DSA أو CSA/HCA أو MLA المبوَّب أو iHC. أما KDA وAttnRes
-فموجودان منفصلين (bailing_hybrid وInkling 2).</td>
+<td>لا يوجد نوع نموذج لهذه العائلات. لا توجد DSA وMLA المبوَّب وiHC إلا
+كآليات على تجهيزات صغيرة (<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>)، ولا يوجد
+CSA/HCA. أما KDA وAttnRes فموجودان منفصلين (bailing_hybrid وInkling
+2).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>الإجمالي: 120 صفًا — مدعوم 54، جزئي 34، غير مدعوم بعد 28، خارج
+<p><strong>الإجمالي: 120 صفًا — مدعوم 55، جزئي 43، غير مدعوم بعد 18، خارج
 النطاق 4.</strong></p>
 <h2 id="المراجع"><strong>المراجع</strong></h2>
 <p>تضم الفهرس الببليوغرافي <strong>445 مصدرًا أوليًا مرقَّمًا فرديًا</strong>

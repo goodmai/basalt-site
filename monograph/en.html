@@ -5076,8 +5076,13 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <tr>
 <td>LSTM and GRU</td>
 <td>1997, 2014; B.3</td>
-<td>not yet</td>
-<td>No recurrent-cell model. No evidence found.</td>
+<td>partial</td>
+<td>Only sLSTM, an LSTM cell with exponential gating, as an optional
+block of <code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMOps.swift"><code>XLSTMOps.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>). It is
+synthetic: it has no public checkpoint layout and is tested only on a
+tiny fixture against a CPU reference. No classic LSTM or GRU.</td>
 </tr>
 <tr>
 <td>Seq2Seq with additive (Bahdanau) attention</td>
@@ -5255,30 +5260,46 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <tr>
 <td>Gated MLA (Kimi K3, Tencent Hy4)</td>
 <td>2026</td>
-<td>not yet</td>
-<td>No evidence found.</td>
+<td>partial</td>
+<td><code>GatedMLAAttention</code> with output and value gates and NoPE
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/GatedMLAAttention.swift"><code>GatedMLAAttention.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) matches a
+CPU reference on tiny fixtures, but no model type uses it.
+bailing_hybrid's MLA also takes the NoPE and output-gate options, with
+no real-weight run yet (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>). No Kimi
+K3 or Tencent Hy4 checkpoint has been run.</td>
 </tr>
 <tr>
 <td>Native Sparse Attention (NSA)</td>
 <td>2025</td>
 <td>partial</td>
-<td><a
+<td><code>--attention-backend nsa</code> with <code>--nsa-window</code>
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/SageMXKVCache+NSA.swift"><code>SageMXKVCache+NSA.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) runs an
+experimental approximation of the three branches: mean-pooled
+compression, top-k blocks through <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>
-(<a href="https://github.com/goodmai/basalt/issues/551">#551</a>) is a
-core used only by <code>SageMXKVCache</code>. <code>serve</code> exposes
-MoBA top-k block routing (<code>--attention-backend moba</code>, <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>),
-not NSA's three branches.</td>
+and a sliding window, mixed by fixed gates instead of trained ones.
+There is no real-model speed or perplexity table yet.</td>
 </tr>
 <tr>
 <td>DeepSeek Sparse Attention (DSA) with a lightning indexer</td>
 <td>2025; B.5</td>
-<td>not yet</td>
-<td>No indexer code. The nearest feature is Quest page top-k
-(<code>--quest-top-k</code>, <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/QuestKVCache.swift"><code>QuestKVCache.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/33">#33</a>, <a
-href="https://github.com/goodmai/basalt/issues/280">#280</a>).</td>
+<td>partial</td>
+<td>The lightning indexer and its top-k sparse attention have Metal
+kernels that match a CPU reference on tiny fixtures (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexer.swift"><code>DSALightningIndexer.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexerMetal.swift"><code>DSALightningIndexerMetal.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>), and
+bailing_hybrid accepts an indexer through <code>dsa_*</code> config
+keys. No open checkpoint of 40B or less carries trained indexer weights,
+and <code>--attention-backend dsa</code> is not exposed.</td>
 </tr>
 <tr>
 <td>CSA + HCA compressed attention (DeepSeek V4)</td>
@@ -5448,20 +5469,48 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernel
 <td>bailing_hybrid (Ling-3.0) with a per-channel KDA Metal kernel (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/BailingHybrid/BailingHybridKDAKernel.swift"><code>BailingHybridKDAKernel.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/issues/672">#672</a>). The
-<code>kimi_linear</code> model type itself is not registered.</td>
+<code>kimi_linear</code> model type itself is not registered. On real
+weights, <code>rapid-mlx/Ling-3.0-tiny-MLX-4bit</code> reaches 1.09
+bits/byte on prose and 0.15 on code (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>, <a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>); the
+remaining P3 items (passkey, TTFT, release throughput) are open.</td>
 </tr>
 <tr>
 <td>Second-generation SSM and delta cores: Mamba-3 (MIMO, complex
 transitions) and Gated DeltaNet-2</td>
 <td>2026; B.7</td>
-<td>not yet</td>
-<td>No evidence found.</td>
+<td>partial</td>
+<td><code>mamba3</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Mamba3/Mamba3Model.swift"><code>Mamba3Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) loads the
+real <code>state-spaces/mamba3-mimo-187m</code> weights (after a safe
+<code>.bin</code> → safetensors conversion) with every tensor checked,
+and in float32 its stepped decode equals the chunked pass (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). Perplexity
+is not measured, because the checkpoint uses the gated Llama-3.1
+tokenizer. <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) runs on a
+tiny fixture only; no checkpoint exists.</td>
 </tr>
 <tr>
 <td>Other recurrent LMs: RWKV-4…7, RetNet, xLSTM/mLSTM</td>
 <td>2023–2025; B.3</td>
-<td>not yet</td>
-<td>No evidence found.</td>
+<td>partial</td>
+<td><code>rwkv7</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/RWKV7/RWKV7Model.swift"><code>RWKV7Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) runs on
+real weights: <code>fla-hub/rwkv7-2.9B-world</code> reaches 1.02
+bits/byte on prose, with the RWKV World tokenizer (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>).
+<code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMModel.swift"><code>XLSTMModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) runs on
+real weights: <code>NX-AI/xLSTM-7b</code> reaches about 1.01 bits/byte
+on prose after honouring <code>force_bos_token_insert</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). Its sLSTM
+block is synthetic and has no checkpoint. RetNet is not supported.</td>
 </tr>
 <tr>
 <td>Hybrid 3:1 of linear and full attention (Qwen 3.5/3.8)</td>
@@ -5482,10 +5531,18 @@ href="https://github.com/goodmai/basalt/issues/521">#521</a>)</td>
 <tr>
 <td>Test-time training layers: TTT, Titans, LaCT</td>
 <td>2024–2025; B.8</td>
-<td>not yet</td>
-<td>No evidence found. Self-rewriting (<a
-href="https://github.com/goodmai/basalt/issues/676">#676</a>) edits
-weights between turns, not inside a layer.</td>
+<td>partial</td>
+<td><code>ttt</code> (Linear and MLP), <code>titans</code> (MAC, MAG,
+MAL) and <code>lact</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TTTModel.swift"><code>TTTModel.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TitansModel.swift"><code>TitansModel.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/LaCTModel.swift"><code>LaCTModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) update
+fast weights inside the layer at inference. They match scalar CPU
+references on tiny fixtures; no upstream checkpoint layout is mapped or
+run.</td>
 </tr>
 </tbody>
 </table>
@@ -5503,10 +5560,15 @@ weights between turns, not inside a layer.</td>
 <tr>
 <td>Hyper-Connections (HC), mHC on the Birkhoff polytope, iHC</td>
 <td>2024–2026; B.8</td>
-<td>not yet</td>
-<td>No evidence found. Sinkhorn–Knopp appears only in weight
-normalisation (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Quantization/SINQNormalizer.swift"><code>SINQNormalizer.swift</code></a>).</td>
+<td>partial</td>
+<td><code>mhc</code>, <code>ihc</code> and <code>hyper_connection</code>
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/HyperConnection/HyperConnectionModel.swift"><code>HyperConnectionModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>), with a
+Metal Sinkhorn–Knopp projection onto the Birkhoff polytope (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernels/HyperConnectionSinkhornKernel.swift"><code>HyperConnectionSinkhornKernel.swift</code></a>).
+Tested only on tiny fixtures; no open checkpoint of 40B or less uses mHC
+or iHC.</td>
 </tr>
 <tr>
 <td>Attention Residuals (AttnRes), attention along depth</td>
@@ -5535,12 +5597,17 @@ parallelism)</td>
 <td>partial</td>
 <td>Huginn-0125 (<code>huginn_raven</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) and Ouro
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>), Ouro
 (<code>ouro</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) run on
-real weights. There is no cross-loop pipelining (Parallel Loop
-Transformer).</td>
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) and
+LoopCoder-V2 (<code>iquestpltcoder</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/PLT/PLTModel.swift"><code>PLTModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/869">#869</a>) run on
+real weights; LoopCoder-V2 reaches perplexity 1.93 on code with 2 loops
+against 15.5 with 1. PLT's shared loop-0 KV and gated sliding window are
+implemented, but the loops run one after another (about 1.6× the
+per-token cost), so cross-loop parallelism itself is absent.</td>
 </tr>
 <tr>
 <td>Adaptive halting (ACT) and early-exit gates (Ouro)</td>
@@ -5628,21 +5695,31 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInf
 <td>Other optimisers: AdaGrad, RMSProp, Adafactor, Shampoo/SOAP, 8-bit
 optimisers</td>
 <td>2011–2024; B.4</td>
-<td>not yet</td>
-<td>AdaGrad, RMSProp and Adafactor ship in <a
+<td>partial</td>
+<td><code>--optimizer soap</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/SOAPOptimizer.swift"><code>SOAPOptimizer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/853">#853</a>) trains
+LoRA adapters and was run on Gemma 4 12B (held-out NLL 5.954 → 3.010 in
+20 steps). AdaGrad, RMSProp and Adafactor ship in <a
 href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>,
-but basalt constructs only Adam and AdamW. No evidence found for
-Shampoo, SOAP or 8-bit states.</td>
+but basalt does not construct them. No evidence found for standalone
+Shampoo or 8-bit states.</td>
 </tr>
 <tr>
 <td>Muon and MuonClip (Newton–Schulz, QK-Clip)</td>
 <td>2024–2025; B.4</td>
-<td>not yet</td>
-<td><code>Muon</code> exists in <a
-href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>
-but no basalt trainer uses it. Only an inference-time q/k L2 clip
-exists, in Inkling 2 (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Attention.swift"><code>Inkling2Attention.swift</code></a>).</td>
+<td>partial</td>
+<td><code>--optimizer muon</code> runs Matched-RMS Muon with
+Newton–Schulz (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/MatchedRMSMuonOptimizer.swift"><code>MatchedRMSMuonOptimizer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>, <a
+href="https://github.com/goodmai/basalt/pull/853">#853</a>) in the
+adapter trainers and was run on Gemma 4 12B (held-out NLL 5.954 → 3.530
+in 20 steps). MuonClip's QK-Clip (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/QKClipController.swift"><code>QKClipController.swift</code></a>)
+is tested only on a tiny fixture: the adapter trainers, the only
+training path, refuse <code>--optimizer muonclip</code> because they
+freeze <code>W_q</code> and <code>W_k</code>.</td>
 </tr>
 <tr>
 <td>LoRA</td>
@@ -5682,21 +5759,28 @@ href="https://github.com/goodmai/basalt/issues/394">#394</a>)</td>
 <tr>
 <td>DPO</td>
 <td>2023; B.11</td>
-<td>partial</td>
-<td>A DPO-form loss against a reference model lives in <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>
-and runs through MCP <code>train_experts</code>. Offline
-<code>--dpo-pairs</code> is refused (<a
+<td>supported</td>
+<td><code>basalt models train --dpo-pairs</code> trains a LoRA with
+offline DPO (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/OfflineDPOTrainer.swift"><code>OfflineDPOTrainer.swift</code></a>,
+<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ModelsTrainCommand.swift"><code>ModelsTrainCommand.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/617">#617</a>).</td>
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>). On Gemma
+4 12B, 4 steps took the preference margin from 0 to 4.74. A DPO-form
+loss also runs through MCP <code>train_experts</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>).</td>
 </tr>
 <tr>
 <td>GRPO</td>
 <td>2024; B.11</td>
-<td>not yet</td>
-<td>Rollouts were planned in <a
-href="https://github.com/goodmai/basalt/issues/566">#566</a>. There is
-no GRPO code.</td>
+<td>partial</td>
+<td><code>basalt models train --grpo</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/GRPOTrainer.swift"><code>GRPOTrainer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) applies
+group-relative, PPO-clipped updates, verified on a tiny fixture. The
+Gemma 4 12B run solved every arithmetic rollout, so every group had zero
+advantage and no update was applied (<a
+href="https://github.com/goodmai/basalt/issues/822">#822</a>).</td>
 </tr>
 <tr>
 <td>RL with verifiable rewards (DeepSeek-R1-Zero)</td>
@@ -5707,7 +5791,9 @@ trains a LoRA, and rolls back if held-out KL or PPL regresses (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInferenceEngine+LabTrain.swift"><code>MLXInferenceEngine+LabTrain.swift</code></a>,
 <a
 href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md#self-training-train_experts">research
-tools</a>). There is no policy-gradient update.</td>
+tools</a>). Policy-gradient updates on verifiable rewards exist through
+<code>--grpo</code>, but have not yet changed real weights (see
+GRPO).</td>
 </tr>
 <tr>
 <td>Chain-of-thought, thinking modes and test-time compute</td>
@@ -6359,12 +6445,15 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 Pro, Kimi K3, Tencent Hy4</td>
 <td>2025–2026</td>
 <td>not yet</td>
-<td>They need DSA, CSA/HCA, Gated MLA or iHC. KDA and AttnRes exist
-separately (bailing_hybrid, Inkling 2).</td>
+<td>No model type for these families. DSA, Gated MLA and iHC exist only
+as tiny-fixture mechanisms (<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>), and CSA/HCA
+is absent. KDA and AttnRes exist separately (bailing_hybrid, Inkling
+2).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total: 120 rows — supported 54, partial 34, not yet 28, out
+<p><strong>Total: 120 rows — supported 55, partial 43, not yet 18, out
 of scope 4.</strong></p>
 <h2 id="bibliography"><strong>Bibliography</strong></h2>
 <p>The bibliography includes <strong>445 individually numbered primary

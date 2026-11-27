@@ -4999,8 +4999,14 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <tr>
 <td>LSTM и GRU</td>
 <td>1997, 2014; Б.3</td>
-<td>пока нет</td>
-<td>Рекуррентных моделей на ячейках нет. Свидетельств не найдено.</td>
+<td>частично</td>
+<td>Есть только sLSTM — ячейка LSTM с экспоненциальными вентилями,
+необязательный блок <code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMOps.swift"><code>XLSTMOps.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>). Он
+синтетический: у него нет раскладки из публичного чекпойнта, и он
+проверен только на крошечной фикстуре против эталона на CPU.
+Классических LSTM и GRU нет.</td>
 </tr>
 <tr>
 <td>Seq2Seq с аддитивным вниманием Бахданау</td>
@@ -5181,31 +5187,46 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <tr>
 <td>Gated MLA (Kimi K3, Tencent Hy4)</td>
 <td>2026</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено.</td>
+<td>частично</td>
+<td><code>GatedMLAAttention</code> с вентилями на выходе и на значениях
+и с NoPE (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/GatedMLAAttention.swift"><code>GatedMLAAttention.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) совпадает
+с эталоном на CPU на крошечных фикстурах, но ни один тип модели его не
+использует. MLA в bailing_hybrid тоже принимает NoPE и выходной вентиль,
+но прогона на реальных весах пока нет (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>). Чекпойнты
+Kimi K3 и Tencent Hy4 не запускались.</td>
 </tr>
 <tr>
 <td>Native Sparse Attention (NSA)</td>
 <td>2025</td>
 <td>частично</td>
-<td><a
+<td><code>--attention-backend nsa</code> с <code>--nsa-window</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/SageMXKVCache+NSA.swift"><code>SageMXKVCache+NSA.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) запускает
+экспериментальное приближение трёх ветвей: сжатие усреднением, top-k
+блоков через <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/BlockSparseRoutingMetal.swift"><code>BlockSparseRoutingMetal.swift</code></a>
-(<a href="https://github.com/goodmai/basalt/issues/551">#551</a>) —
-ядро, которое использует только <code>SageMXKVCache</code>.
-<code>serve</code> даёт блочную маршрутизацию MoBA top-k
-(<code>--attention-backend moba</code>, <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/KVCacheOptions.swift"><code>KVCacheOptions.swift</code></a>),
-а не три ветви NSA.</td>
+и скользящее окно, смешанные фиксированными, а не обученными вентилями.
+Таблицы скорости и перплексии на реальной модели пока нет.</td>
 </tr>
 <tr>
 <td>DeepSeek Sparse Attention (DSA) с быстрым индексатором</td>
 <td>2025; Б.5</td>
-<td>пока нет</td>
-<td>Кода индексатора нет. Ближайший аналог — постраничный top-k Quest
-(<code>--quest-top-k</code>, <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/QuestKVCache.swift"><code>QuestKVCache.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/33">#33</a>, <a
-href="https://github.com/goodmai/basalt/issues/280">#280</a>).</td>
+<td>частично</td>
+<td>У быстрого индексатора и его разреженного внимания top-k есть ядра
+Metal, совпадающие с эталоном на CPU на крошечных фикстурах (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexer.swift"><code>DSALightningIndexer.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Attention/DSALightningIndexerMetal.swift"><code>DSALightningIndexerMetal.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>), а
+bailing_hybrid принимает индексатор через ключи конфига
+<code>dsa_*</code>. Ни один открытый чекпойнт до 40B не несёт обученных
+весов индексатора, а <code>--attention-backend dsa</code> не
+выставлен.</td>
 </tr>
 <tr>
 <td>Сжатое внимание CSA + HCA (DeepSeek V4)</td>
@@ -5375,20 +5396,51 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernel
 <td>bailing_hybrid (Ling-3.0) с поканальным ядром KDA на Metal (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/BailingHybrid/BailingHybridKDAKernel.swift"><code>BailingHybridKDAKernel.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/issues/672">#672</a>). Сам
-тип <code>kimi_linear</code> не зарегистрирован.</td>
+тип <code>kimi_linear</code> не зарегистрирован. На реальных весах
+<code>rapid-mlx/Ling-3.0-tiny-MLX-4bit</code> даёт 1.09 бит/байт на
+прозе и 0.15 на коде (<a
+href="https://github.com/goodmai/basalt/issues/672">#672</a>, <a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>); остальные
+пункты P3 (passkey, TTFT, пропускная способность release-сборки)
+открыты.</td>
 </tr>
 <tr>
 <td>SSM и дельта-ядра второго поколения: Mamba-3 (MIMO, комплексные
 переходы) и Gated DeltaNet-2</td>
 <td>2026; Б.7</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено.</td>
+<td>частично</td>
+<td><code>mamba3</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Mamba3/Mamba3Model.swift"><code>Mamba3Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) загружает
+реальные веса <code>state-spaces/mamba3-mimo-187m</code> (после
+безопасной конвертации <code>.bin</code> → safetensors) с проверкой
+каждого тензора, и во float32 его пошаговое декодирование совпадает с
+проходом по чанкам (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). Перплексия
+не измерена, потому что чекпойнт использует закрытый (gated) токенизатор
+Llama-3.1. <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>)
+запускается только на крошечной фикстуре; чекпойнта не существует.</td>
 </tr>
 <tr>
 <td>Другие рекуррентные LM: RWKV-4…7, RetNet, xLSTM/mLSTM</td>
 <td>2023–2025; Б.3</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено.</td>
+<td>частично</td>
+<td><code>rwkv7</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/RWKV7/RWKV7Model.swift"><code>RWKV7Model.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) работает
+на реальных весах: <code>fla-hub/rwkv7-2.9B-world</code> даёт 1.02
+бит/байт на прозе с токенизатором RWKV World (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>).
+<code>xlstm</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/XLSTM/XLSTMModel.swift"><code>XLSTMModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) работает
+на реальных весах: <code>NX-AI/xLSTM-7b</code> даёт около 1.01 бит/байт
+на прозе после учёта <code>force_bos_token_insert</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). Его блок
+sLSTM синтетический, и чекпойнта для него нет. RetNet не
+поддерживается.</td>
 </tr>
 <tr>
 <td>Гибрид 3:1 линейного и полного внимания (Qwen 3.5/3.8)</td>
@@ -5410,10 +5462,18 @@ href="https://github.com/goodmai/basalt/issues/521">#521</a>)</td>
 <tr>
 <td>Слои обучения на тесте: TTT, Titans, LaCT</td>
 <td>2024–2025; Б.8</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено. Самопереписывание (<a
-href="https://github.com/goodmai/basalt/issues/676">#676</a>) правит
-веса между ходами диалога, а не внутри слоя.</td>
+<td>частично</td>
+<td><code>ttt</code> (Linear и MLP), <code>titans</code> (MAC, MAG, MAL)
+и <code>lact</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TTTModel.swift"><code>TTTModel.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/TitansModel.swift"><code>TitansModel.swift</code></a>,
+<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/FastWeights/LaCTModel.swift"><code>LaCTModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/867">#867</a>) обновляют
+быстрые веса внутри слоя на инференсе. Они совпадают со скалярными
+эталонами на CPU на крошечных фикстурах; раскладка исходных чекпойнтов
+не сопоставлена и не запускалась.</td>
 </tr>
 </tbody>
 </table>
@@ -5431,10 +5491,15 @@ href="https://github.com/goodmai/basalt/issues/676">#676</a>) правит
 <tr>
 <td>Гиперсвязи HC, mHC на многограннике Биркгофа, iHC</td>
 <td>2024–2026; Б.8</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено. Синкхорн—Кнопп встречается только в
-нормализации весов (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Quantization/SINQNormalizer.swift"><code>SINQNormalizer.swift</code></a>).</td>
+<td>частично</td>
+<td><code>mhc</code>, <code>ihc</code> и <code>hyper_connection</code>
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/HyperConnection/HyperConnectionModel.swift"><code>HyperConnectionModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/864">#864</a>) с
+проекцией Синкхорна—Кноппа на многогранник Биркгофа на Metal (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Kernels/HyperConnectionSinkhornKernel.swift"><code>HyperConnectionSinkhornKernel.swift</code></a>).
+Проверено только на крошечных фикстурах; ни один открытый чекпойнт до
+40B не использует mHC или iHC.</td>
 </tr>
 <tr>
 <td>Attention Residuals (AttnRes), внимание по глубине</td>
@@ -5463,12 +5528,17 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>частично</td>
 <td>Huginn-0125 (<code>huginn_raven</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) и Ouro
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>), Ouro
 (<code>ouro</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) работают
-на реальных весах. Конвейера между петлями (Parallel Loop Transformer)
-нет.</td>
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) и
+LoopCoder-V2 (<code>iquestpltcoder</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/PLT/PLTModel.swift"><code>PLTModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/869">#869</a>) работают
+на реальных весах; у LoopCoder-V2 перплексия на коде 1.93 с 2 петлями
+против 15.5 с одной. Общий KV петли 0 и вентильное скользящее окно PLT
+реализованы, но петли идут одна за другой (около 1.6× стоимости на
+токен), так что самого межпетлевого параллелизма нет.</td>
 </tr>
 <tr>
 <td>Адаптивная остановка ACT и вентили раннего выхода (Ouro)</td>
@@ -5557,21 +5627,31 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInf
 <td>Другие оптимизаторы: AdaGrad, RMSProp, Adafactor, Shampoo/SOAP,
 8-битные оптимизаторы</td>
 <td>2011–2024; Б.4</td>
-<td>пока нет</td>
-<td>AdaGrad, RMSProp и Adafactor есть в <a
+<td>частично</td>
+<td><code>--optimizer soap</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/SOAPOptimizer.swift"><code>SOAPOptimizer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/853">#853</a>) обучает
+LoRA-адаптеры и запускался на Gemma 4 12B (NLL на отложенной выборке
+5.954 → 3.010 за 20 шагов). AdaGrad, RMSProp и Adafactor есть в <a
 href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>,
-но basalt создаёт только Adam и AdamW. Для Shampoo, SOAP и 8-битных
-состояний свидетельств не найдено.</td>
+но basalt их не создаёт. Для отдельного Shampoo и 8-битных состояний
+свидетельств не найдено.</td>
 </tr>
 <tr>
 <td>Muon и MuonClip (Ньютон—Шульц, QK-Clip)</td>
 <td>2024–2025; Б.4</td>
-<td>пока нет</td>
-<td><code>Muon</code> есть в <a
-href="https://github.com/ml-explore/mlx-swift/blob/0.33.0/Source/MLXOptimizers/Optimizers.swift">MLXOptimizers</a>,
-но ни один тренер basalt его не использует. Есть только L2-клип q/k на
-инференсе в Inkling 2 (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Attention.swift"><code>Inkling2Attention.swift</code></a>).</td>
+<td>частично</td>
+<td><code>--optimizer muon</code> запускает Muon с согласованным RMS и
+итерациями Ньютона—Шульца (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/MatchedRMSMuonOptimizer.swift"><code>MatchedRMSMuonOptimizer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>, <a
+href="https://github.com/goodmai/basalt/pull/853">#853</a>) в тренерах
+адаптеров; прогон на Gemma 4 12B дал NLL на отложенной выборке 5.954 →
+3.530 за 20 шагов. QK-Clip из MuonClip (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/QKClipController.swift"><code>QKClipController.swift</code></a>)
+проверен только на крошечной фикстуре: тренеры адаптеров, единственный
+путь обучения, отклоняют <code>--optimizer muonclip</code>, потому что
+замораживают <code>W_q</code> и <code>W_k</code>.</td>
 </tr>
 <tr>
 <td>LoRA</td>
@@ -5612,21 +5692,29 @@ href="https://github.com/goodmai/basalt/issues/394">#394</a>)</td>
 <tr>
 <td>DPO</td>
 <td>2023; Б.11</td>
-<td>частично</td>
-<td>Лосс в форме DPO с референсной моделью живёт в <a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>
-и запускается через MCP <code>train_experts</code>. Офлайновый
-<code>--dpo-pairs</code> отклоняется (<a
+<td>поддержано</td>
+<td><code>basalt models train --dpo-pairs</code> обучает LoRA офлайновым
+DPO (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/OfflineDPOTrainer.swift"><code>OfflineDPOTrainer.swift</code></a>,
+<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ModelsTrainCommand.swift"><code>ModelsTrainCommand.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/617">#617</a>).</td>
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>). На Gemma
+4 12B за 4 шага отрыв предпочтения вырос с 0 до 4.74. Лосс в форме DPO
+также запускается через MCP <code>train_experts</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/ADPOTrainer.swift"><code>ADPOTrainer.swift</code></a>).</td>
 </tr>
 <tr>
 <td>GRPO</td>
 <td>2024; Б.11</td>
-<td>пока нет</td>
-<td>Роллауты запланированы в <a
-href="https://github.com/goodmai/basalt/issues/566">#566</a>. Кода GRPO
-нет.</td>
+<td>частично</td>
+<td><code>basalt models train --grpo</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Training/GRPOTrainer.swift"><code>GRPOTrainer.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/840">#840</a>) делает
+групповые обновления с клиппингом PPO, проверенные на крошечной
+фикстуре. На Gemma 4 12B модель решила все арифметические роллауты,
+поэтому преимущество во всех группах было нулевым и ни одного обновления
+не произошло (<a
+href="https://github.com/goodmai/basalt/issues/822">#822</a>).</td>
 </tr>
 <tr>
 <td>RL с проверяемыми наградами (DeepSeek-R1-Zero)</td>
@@ -5638,7 +5726,9 @@ href="https://github.com/goodmai/basalt/issues/566">#566</a>. Кода GRPO
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/MLXInferenceEngine+LabTrain.swift"><code>MLXInferenceEngine+LabTrain.swift</code></a>,
 <a
 href="https://github.com/goodmai/basalt/blob/main/docs/research-tools.md#self-training-train_experts">research
-tools</a>). Обновления по градиенту политики нет.</td>
+tools</a>). Обновления по градиенту политики на проверяемых наградах
+есть через <code>--grpo</code>, но реальных весов они пока не меняли
+(см. GRPO).</td>
 </tr>
 <tr>
 <td>Цепочки рассуждений, режимы мышления и вычисления на тесте</td>
@@ -6299,12 +6389,15 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 Pro, Kimi K3, Tencent Hy4</td>
 <td>2025–2026</td>
 <td>пока нет</td>
-<td>Им нужны DSA, CSA/HCA, Gated MLA или iHC. KDA и AttnRes в basalt
-есть по отдельности (bailing_hybrid, Inkling 2).</td>
+<td>Типов моделей для этих семейств нет. DSA, Gated MLA и iHC есть
+только как механизмы на крошечных фикстурах (<a
+href="https://github.com/goodmai/basalt/pull/864">#864</a>), CSA/HCA
+нет. KDA и AttnRes в basalt есть по отдельности (bailing_hybrid, Inkling
+2).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Итого: 120 строк — поддержано 54, частично 34, пока нет 28,
+<p><strong>Итого: 120 строк — поддержано 55, частично 43, пока нет 18,
 вне области 4.</strong></p>
 <h2 id="библиография"><strong>Библиография</strong></h2>
 <p>В библиографический указатель включены <strong>445 индивидуально
