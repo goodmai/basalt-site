@@ -5827,7 +5827,7 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro et Parallel Loop Transformer (parallélisme
 inter-boucles)</td>
 <td>2025 ; B.9</td>
-<td>partiel</td>
+<td>pris en charge</td>
 <td>Huginn-0125 (<code>huginn_raven</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/838">#838</a>), Ouro
@@ -5839,9 +5839,12 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <a href="https://github.com/goodmai/basalt/pull/869">#869</a>) tournent
 avec de vrais poids ; LoopCoder-V2 atteint une perplexité de 1,93 sur du
 code avec 2 boucles contre 15,5 avec 1. Le KV partagé de la boucle 0 et
-la fenêtre glissante à porte de PLT sont implémentés, mais les boucles
-s'exécutent l'une après l'autre (environ 1,6× le coût par token) : le
-parallélisme inter-boucles lui-même est absent.</td>
+la fenêtre glissante à porte de PLT sont implémentés. Le parallélisme
+inter-boucles exécute toutes les boucles d'un pas de décodage en une
+seule passe groupée (<a
+href="https://github.com/goodmai/basalt/pull/875">#875</a>) :
+LoopCoder-V2 décode à 46,7 jetons/s avec 2 boucles contre 26,0 en
+séquentiel, à perplexité égale.</td>
 </tr>
 <tr>
 <td>Arrêt adaptatif (ACT) et portes de sortie anticipée (Ouro)</td>
@@ -6713,7 +6716,7 @@ est absent. KDA et AttnRes existent séparément (bailing_hybrid, Inkling
 </tr>
 </tbody>
 </table>
-<p><strong>Total : 120 lignes — pris en charge 55, partiel 43, pas
+<p><strong>Total : 120 lignes — pris en charge 56, partiel 42, pas
 encore 18, hors du champ 4.</strong></p>
 <h2 id="bibliographie"><strong>Bibliographie</strong></h2>
 <p>Le répertoire bibliographique comprend <strong>445 sources primaires

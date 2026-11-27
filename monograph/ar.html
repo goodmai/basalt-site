@@ -5243,7 +5243,7 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125 وOuro وParallel Loop Transformer (التوازي عبر
 الحلقات)</td>
 <td>2025; B.9</td>
-<td>جزئي</td>
+<td>مدعوم</td>
 <td>يعمل Huginn-0125 (<code>huginn_raven</code>، <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>،
 <a href="https://github.com/goodmai/basalt/pull/838">#838</a>) وOuro
@@ -5255,8 +5255,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <a href="https://github.com/goodmai/basalt/pull/869">#869</a>) بأوزان
 حقيقية؛ ويبلغ LoopCoder-V2 حيرة 1.93 على الشيفرة بحلقتين مقابل 15.5
 بحلقة واحدة. التخزين المشترك لـ KV الحلقة 0 والنافذة المنزلقة المبوَّبة في
-PLT منفَّذان، لكن الحلقات تعمل واحدة بعد أخرى (نحو 1.6× كلفة الرمز)،
-فالتوازي عبر الحلقات نفسه غير موجود.</td>
+PLT منفَّذان. ويشغّل التوازي عبر الحلقات جميع حلقات خطوة فك الترميز في
+تمريرة مجمَّعة واحدة (<a
+href="https://github.com/goodmai/basalt/pull/875">#875</a>): يفك
+LoopCoder-V2 الترميز بسرعة 46.7 رمز/ث بحلقتين مقابل 26.0 بالتنفيذ
+المتتابع، بالحيرة نفسها.</td>
 </tr>
 <tr>
 <td>التوقف التكيفي (ACT) وبوابات الخروج المبكر (Ouro)</td>
@@ -6096,7 +6099,7 @@ CSA/HCA. أما KDA وAttnRes فموجودان منفصلين (bailing_hybrid و
 </tr>
 </tbody>
 </table>
-<p><strong>الإجمالي: 120 صفًا — مدعوم 55، جزئي 43، غير مدعوم بعد 18، خارج
+<p><strong>الإجمالي: 120 صفًا — مدعوم 56، جزئي 42، غير مدعوم بعد 18، خارج
 النطاق 4.</strong></p>
 <h2 id="المراجع"><strong>المراجع</strong></h2>
 <p>تضم الفهرس الببليوغرافي <strong>445 مصدرًا أوليًا مرقَّمًا فرديًا</strong>

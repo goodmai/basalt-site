@@ -5068,7 +5068,7 @@ href="https://github.com/goodmai/basalt/issues/650">#650</a>）。</td>
 <tr>
 <td>Huginn-0125、Ouro 与 Parallel Loop Transformer（跨循环并行）</td>
 <td>2025; B.9</td>
-<td>部分支持</td>
+<td>已支持</td>
 <td>Huginn-0125（<code>huginn_raven</code>、<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>、<a
 href="https://github.com/goodmai/basalt/pull/838">#838</a>）、Ouro（<code>ouro</code>、<a
@@ -5078,8 +5078,11 @@ LoopCoder-V2（<code>iquestpltcoder</code>、<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/PLT/PLTModel.swift"><code>PLTModel.swift</code></a>、<a
 href="https://github.com/goodmai/basalt/pull/869">#869</a>）都在真实权重上运行；LoopCoder-V2
 在代码上 2 次循环的困惑度为 1.93，1 次循环为 15.5。PLT 的第 0 次循环共享
-KV 与门控滑动窗口已经实现，但各次循环依次执行（每个 token 的开销约为 1.6
-倍），因此跨循环并行本身并不存在。</td>
+KV
+与门控滑动窗口已经实现。跨循环并行将一个解码步的所有循环合并为一次批处理计算执行（<a
+href="https://github.com/goodmai/basalt/pull/875">#875</a>）：LoopCoder-V2
+在 2 次循环下的解码速度为 46.7 token/s，依次执行时为
+26.0，困惑度不变。</td>
 </tr>
 <tr>
 <td>自适应停止（ACT）与提前退出门（Ouro）</td>
@@ -5871,7 +5874,7 @@ href="https://github.com/goodmai/basalt/pull/864">#864</a>），CSA/HCA
 </tr>
 </tbody>
 </table>
-<p><strong>合计：120 行——已支持 55，部分支持 43，尚未支持 18，不适用
+<p><strong>合计：120 行——已支持 56，部分支持 42，尚未支持 18，不适用
 4。</strong></p>
 <h2 id="参考文献"><strong>参考文献</strong></h2>
 <p>参考文献索引收录了 <strong>445

@@ -5596,7 +5596,7 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro and Parallel Loop Transformer (cross-loop
 parallelism)</td>
 <td>2025; B.9</td>
-<td>partial</td>
+<td>supported</td>
 <td>Huginn-0125 (<code>huginn_raven</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/838">#838</a>), Ouro
@@ -5608,8 +5608,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <a href="https://github.com/goodmai/basalt/pull/869">#869</a>) run on
 real weights; LoopCoder-V2 reaches perplexity 1.93 on code with 2 loops
 against 15.5 with 1. PLT's shared loop-0 KV and gated sliding window are
-implemented, but the loops run one after another (about 1.6× the
-per-token cost), so cross-loop parallelism itself is absent.</td>
+implemented. Cross-loop parallelism runs all loops of a decode step as
+one batched pass (<a
+href="https://github.com/goodmai/basalt/pull/875">#875</a>):
+LoopCoder-V2 decodes at 46.7 tok/s with 2 loops against 26.0
+sequentially, at the same perplexity.</td>
 </tr>
 <tr>
 <td>Adaptive halting (ACT) and early-exit gates (Ouro)</td>
@@ -6455,7 +6458,7 @@ is absent. KDA and AttnRes exist separately (bailing_hybrid, Inkling
 </tr>
 </tbody>
 </table>
-<p><strong>Total: 120 rows — supported 55, partial 43, not yet 18, out
+<p><strong>Total: 120 rows — supported 56, partial 42, not yet 18, out
 of scope 4.</strong></p>
 <h2 id="bibliography"><strong>Bibliography</strong></h2>
 <p>The bibliography includes <strong>445 individually numbered primary

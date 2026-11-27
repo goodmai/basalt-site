@@ -5527,7 +5527,7 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro и Parallel Loop Transformer (межпетлевой
 параллелизм)</td>
 <td>2025; Б.9</td>
-<td>частично</td>
+<td>поддержано</td>
 <td>Huginn-0125 (<code>huginn_raven</code>, <a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/838">#838</a>), Ouro
@@ -5539,8 +5539,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <a href="https://github.com/goodmai/basalt/pull/869">#869</a>) работают
 на реальных весах; у LoopCoder-V2 перплексия на коде 1.93 с 2 петлями
 против 15.5 с одной. Общий KV петли 0 и вентильное скользящее окно PLT
-реализованы, но петли идут одна за другой (около 1.6× стоимости на
-токен), так что самого межпетлевого параллелизма нет.</td>
+реализованы. Межпетлевой параллелизм выполняет все петли шага
+декодирования одним батчевым проходом (<a
+href="https://github.com/goodmai/basalt/pull/875">#875</a>):
+LoopCoder-V2 декодирует 46.7 токенов/с с 2 петлями против 26.0 при
+последовательном выполнении, при той же перплексии.</td>
 </tr>
 <tr>
 <td>Адаптивная остановка ACT и вентили раннего выхода (Ouro)</td>
@@ -6399,7 +6402,7 @@ href="https://github.com/goodmai/basalt/pull/864">#864</a>), CSA/HCA
 </tr>
 </tbody>
 </table>
-<p><strong>Итого: 120 строк — поддержано 55, частично 43, пока нет 18,
+<p><strong>Итого: 120 строк — поддержано 56, частично 42, пока нет 18,
 вне области 4.</strong></p>
 <h2 id="библиография"><strong>Библиография</strong></h2>
 <p>В библиографический указатель включены <strong>445 индивидуально
