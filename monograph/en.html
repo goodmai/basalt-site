@@ -5487,9 +5487,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 real <code>state-spaces/mamba3-mimo-187m</code> weights (after a safe
 <code>.bin</code> → safetensors conversion) with every tensor checked,
 and in float32 its stepped decode equals the chunked pass (<a
-href="https://github.com/goodmai/basalt/pull/871">#871</a>). Perplexity
-is not measured, because the checkpoint uses the gated Llama-3.1
-tokenizer. <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). With the
+Llama-3.1 tokenizer it reaches 1.42 bits/byte on prose and 1.17 on code
+(<a href="https://github.com/goodmai/basalt/issues/847">#847</a>); using
+it still needs the manual <code>.bin</code> conversion and
+<code>model_type</code> injection. <code>gdn2</code> (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/867">#867</a>) runs on a
 tiny fixture only; no checkpoint exists.</td>

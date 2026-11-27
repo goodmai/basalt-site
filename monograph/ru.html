@@ -5416,9 +5416,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 безопасной конвертации <code>.bin</code> → safetensors) с проверкой
 каждого тензора, и во float32 его пошаговое декодирование совпадает с
 проходом по чанкам (<a
-href="https://github.com/goodmai/basalt/pull/871">#871</a>). Перплексия
-не измерена, потому что чекпойнт использует закрытый (gated) токенизатор
-Llama-3.1. <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). С
+токенизатором Llama-3.1 он даёт 1.42 бит/байт на прозе и 1.17 на коде
+(<a href="https://github.com/goodmai/basalt/issues/847">#847</a>); для
+его использования по-прежнему нужны ручная конвертация <code>.bin</code>
+и подстановка <code>model_type</code>. <code>gdn2</code> (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/867">#867</a>)
 запускается только на крошечной фикстуре; чекпойнта не существует.</td>

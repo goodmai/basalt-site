@@ -4972,8 +4972,10 @@ href="https://github.com/goodmai/basalt/pull/867">#867</a>）加载真实的
 <code>state-spaces/mamba3-mimo-187m</code> 权重（经过安全的
 <code>.bin</code> → safetensors 转换）并检查每个张量；在 float32
 下，其逐步解码与分块计算的结果相等（<a
-href="https://github.com/goodmai/basalt/pull/871">#871</a>）。困惑度未测量，因为该检查点使用受限访问的
-Llama-3.1 分词器。<code>gdn2</code>（<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>）。配合
+Llama-3.1 分词器，它在散文上达到 1.42 比特/字节，在代码上达到 1.17（<a
+href="https://github.com/goodmai/basalt/issues/847">#847</a>）；使用它仍需手动转换
+<code>.bin</code> 并注入 <code>model_type</code>。<code>gdn2</code>（<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>、<a
 href="https://github.com/goodmai/basalt/pull/867">#867</a>）只在微型夹具上运行；不存在检查点。</td>
 </tr>

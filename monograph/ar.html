@@ -5134,9 +5134,11 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <code>state-spaces/mamba3-mimo-187m</code> الحقيقية (بعد تحويل آمن
 <code>.bin</code> → safetensors) مع التحقق من كل موتر، وفي float32 يساوي
 فكُّ ترميزه خطوةً بخطوة التمريرَ المقسَّم إلى كتل (<a
-href="https://github.com/goodmai/basalt/pull/871">#871</a>). لم تُقَس
-الحيرة (perplexity)، لأن نقطة الحفظ تستخدم مجزِّئ Llama-3.1 المقيَّد الوصول.
-أما <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). مع مجزِّئ
+Llama-3.1 يبلغ 1.42 بت/بايت على النثر و1.17 على الشيفرة (<a
+href="https://github.com/goodmai/basalt/issues/847">#847</a>)؛ ولا يزال
+استخدامه يتطلب تحويل <code>.bin</code> يدويًا وحقن
+<code>model_type</code>. أما <code>gdn2</code> (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>،
 <a href="https://github.com/goodmai/basalt/pull/867">#867</a>) فلا يعمل
 إلا على تجهيزة صغيرة؛ ولا توجد نقطة حفظ.</td>

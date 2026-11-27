@@ -5695,9 +5695,12 @@ pesos reales de <code>state-spaces/mamba3-mimo-187m</code> (tras una
 conversión segura <code>.bin</code> → safetensors) comprobando cada
 tensor, y en float32 su decodificación paso a paso es igual a la pasada
 por bloques (<a
-href="https://github.com/goodmai/basalt/pull/871">#871</a>). La
-perplejidad no se mide, porque el checkpoint usa el tokenizador
-restringido de Llama-3.1. <code>gdn2</code> (<a
+href="https://github.com/goodmai/basalt/pull/871">#871</a>). Con el
+tokenizador de Llama-3.1 alcanza 1,42 bits/byte en prosa y 1,17 en
+código (<a
+href="https://github.com/goodmai/basalt/issues/847">#847</a>); usarlo
+aún requiere la conversión manual del <code>.bin</code> y la inyección
+de <code>model_type</code>. <code>gdn2</code> (<a
 href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/GatedDeltaNet2/GatedDeltaNet2Model.swift"><code>GatedDeltaNet2Model.swift</code></a>,
 <a href="https://github.com/goodmai/basalt/pull/867">#867</a>) solo se
 ejecuta en un fixture diminuto; no existe ningún checkpoint.</td>
