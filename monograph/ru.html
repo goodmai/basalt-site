@@ -4936,10 +4936,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 id="приложение-в-что-из-монографии-уже-поддержано-в-basalt"><strong>Приложение
 В. Что из монографии уже поддержано в basalt</strong></h2>
 <p>Приложение сопоставляет вехи монографии (в основном 2012–2027 годы, а
-также фундамент, на который опирается basalt) с basalt v0.13.0 по
-состоянию на 2026-11-26. «Поддержано» ставится, только если механизм
-доступен через зарегистрированный <code>model_type</code>, принятый флаг
-или маршрут REST с реальными весами, а отдельные ядра без вызова,
+также фундамент, на который опирается basalt) с basalt main по состоянию
+на 2026-11-27. «Поддержано» ставится, только если механизм доступен
+через зарегистрированный <code>model_type</code>, принятый флаг или
+маршрут REST с реальными весами, а отдельные ядра без вызова,
 отклонённые или только экспериментальные флаги и модули, которые
 накладывают веса на каркас со случайной инициализацией, считаются
 «частично». Ссылки на <code>goodmai/mlx-swift-lm</code> указывают на
@@ -5460,19 +5460,28 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro и Parallel Loop Transformer (межпетлевой
 параллелизм)</td>
 <td>2025; Б.9</td>
-<td>пока нет</td>
-<td>Inkling 2 — единственный петлевой тип модели, конвейера между
-петлями нет.</td>
+<td>частично</td>
+<td>Huginn-0125 (<code>huginn_raven</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) и Ouro
+(<code>ouro</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) работают
+на реальных весах. Конвейера между петлями (Parallel Loop Transformer)
+нет.</td>
 </tr>
 <tr>
 <td>Адаптивная остановка ACT и вентили раннего выхода (Ouro)</td>
 <td>2016, 2025; Б.9</td>
-<td>пока нет</td>
-<td>Inkling 2 читает <code>is_varloop</code>, но не использует его (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Configuration.swift"><code>Inkling2Configuration.swift</code></a>).
-<code>--experimental-adaptive-thinking-budget</code> (<a
-href="https://github.com/goodmai/basalt/issues/41">#41</a>) меняет длину
-рассуждения, а не глубину.</td>
+<td>поддержано</td>
+<td><code>--experimental-loop-exit &lt;threshold&gt;</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LoopExit.swift"><code>LoopExit.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/issues/820">#820</a>): Ouro
+использует свой обученный вентиль выхода, а Inkling 2 и Huginn — выход
+без обучения по относительному изменению остаточного потока между
+проходами. На Huginn-0125 порог 0.1 даёт 2.3× скорости декодирования при
++1.9% перплексии (<a
+href="https://github.com/goodmai/basalt/pull/849">#849</a>).</td>
 </tr>
 <tr>
 <td>Hourglass-трансформеры переменной ширины, наборы Matryoshka,
@@ -5840,16 +5849,18 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <td>Масочные дискретные диффузионные LM (D3PM, SEDD, MDLM, LLaDA, Dream,
 Mercury)</td>
 <td>2021–2025; Б.10</td>
-<td>частично</td>
-<td>У ядра Fast-dLLM (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMCore.swift"><code>FastDLLMCore.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/574">#574</a>) есть
-тесты, но <code>--experimental-dllm</code> отклоняется как
-неподключённый (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ExperimentalServeOptions.swift"><code>ExperimentalServeOptions.swift</code></a>).
-Форк регистрирует <code>nemotron_labs_diffusion</code> (<a
-href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4eebb19fe28f8a/Libraries/MLXLLM/Models/NemotronLabsDiffusion.swift"><code>NemotronLabsDiffusion.swift</code></a>),
-а basalt вызывает только его авторегрессионный путь.</td>
+<td>поддержано</td>
+<td>LLaDA-8B (<code>llada</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LLaDA/LLaDAModel.swift"><code>LLaDAModel.swift</code></a>)
+работает на реальных весах под <code>--experimental-dllm</code> через
+раннер Fast-dLLM (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMRunner.swift"><code>FastDLLMRunner.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>, <a
+href="https://github.com/goodmai/basalt/pull/833">#833</a>) со слитным
+ядром внимания на два блока (<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>). Dream и
+Mercury не поддержаны. <code>nemotron_labs_diffusion</code> из форка
+basalt вызывает только по его авторегрессионному пути.</td>
 </tr>
 <tr>
 <td>Петлевые диффузионные LM (LoopMDM, Looped UDLM) и по-масштабный VAR
@@ -5970,10 +5981,20 @@ href="https://github.com/goodmai/basalt/blob/main/Tests/BasaltTests/NemotronTran
 <td>Whisper и быстрые ASR (Parakeet-TDT, Canary, SenseVoice, GigaAM,
 Voxtral Realtime)</td>
 <td>2022–2026</td>
-<td>пока нет</td>
-<td>Свидетельств не найдено. Речевой ввод на устройстве идёт через macOS
-SpeechAnalyzer (<code>--speech-analyzer</code>, <a
-href="https://github.com/goodmai/basalt/issues/222">#222</a>).</td>
+<td>поддержано</td>
+<td><code>/v1/audio/transcriptions</code> направляет Whisper
+(<code>whisper</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Whisper/"><code>Speech/Whisper</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) и
+Parakeet-TDT (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Parakeet/"><code>Speech/Parakeet</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/839">#839</a>) через
+<code>SpeechRecognitionModel</code>; замеры на реальных весах — в <a
+href="https://github.com/goodmai/basalt/issues/818">#818</a>.
+Репозиториям Whisper из mlx-community пока нужен
+<code>tokenizer.json</code> (<a
+href="https://github.com/goodmai/basalt/issues/851">#851</a>). Canary,
+SenseVoice, GigaAM и Voxtral Realtime не поддержаны.</td>
 </tr>
 <tr>
 <td>Самоконтролируемые речевые энкодеры (wav2vec 2.0, HuBERT,
@@ -6283,7 +6304,7 @@ Pro, Kimi K3, Tencent Hy4</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Итого: 120 строк — поддержано 51, частично 34, пока нет 31,
+<p><strong>Итого: 120 строк — поддержано 54, частично 34, пока нет 28,
 вне области 4.</strong></p>
 <h2 id="библиография"><strong>Библиография</strong></h2>
 <p>В библиографический указатель включены <strong>445 индивидуально

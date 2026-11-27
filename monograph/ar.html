@@ -4663,12 +4663,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 C. ما يدعمه basalt حاليًا من محتوى الدراسة</strong></h2>
 <p>يطابق هذا الملحق بين أنواع النماذج والآليات التي تعدّها الدراسة محطات
 مفصلية (معظمها بين 2012 و2027، إضافة إلى الأسس التي يعتمد عليها basalt)
-وبين basalt v0.13.0 بحسب حالته في 2026-11-26. لا يُعدّ الصف «مدعومًا» إلا
-إذا وصل إليه <code>model_type</code> مسجَّل أو علم مقبول أو نقطة نهاية
-موجَّهة مع أوزان حقيقية. أما الأنوية المستقلة، والأعلام المرفوضة أو
-التجريبية فقط، والوحدات التي تحمّل الأوزان بأقصى جهد فوق هيكل مبذور، فتُعدّ
-«جزئي». وحيثما يختلف README الخاص بـ basalt مع الشيفرة أو CHANGELOG،
-فالمعتمد هو الشيفرة وCHANGELOG.</p>
+وبين basalt main بحسب حالته في 2026-11-27. لا يُعدّ الصف «مدعومًا» إلا إذا
+وصل إليه <code>model_type</code> مسجَّل أو علم مقبول أو نقطة نهاية موجَّهة
+مع أوزان حقيقية. أما الأنوية المستقلة، والأعلام المرفوضة أو التجريبية
+فقط، والوحدات التي تحمّل الأوزان بأقصى جهد فوق هيكل مبذور، فتُعدّ «جزئي».
+وحيثما يختلف README الخاص بـ basalt مع الشيفرة أو CHANGELOG، فالمعتمد هو
+الشيفرة وCHANGELOG.</p>
 <p>الروابط إلى <code>https://github.com/goodmai/mlx-swift-lm/...</code>
 تشير إلى مراجعة النسخة المتفرعة المثبَّتة <code>8e76c2f</code>
 (<code>Package.swift</code>)، وفيها معظم تعريفات المعماريات.</p>
@@ -5180,20 +5180,28 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125 وOuro وParallel Loop Transformer (التوازي عبر
 الحلقات)</td>
 <td>2025; B.9</td>
-<td>غير مدعوم بعد</td>
-<td>Inkling 2 هو نوع النموذج المكرَّر الوحيد، ولا يوجد تسريب (pipelining)
-عبر الحلقات.</td>
+<td>جزئي</td>
+<td>يعمل Huginn-0125 (<code>huginn_raven</code>، <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) وOuro
+(<code>ouro</code>، <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) مع أوزان
+حقيقية. ولا يوجد تسريب (pipelining) عبر الحلقات (Parallel Loop
+Transformer).</td>
 </tr>
 <tr>
 <td>التوقف التكيفي (ACT) وبوابات الخروج المبكر (Ouro)</td>
 <td>2016, 2025; B.9</td>
-<td>غير مدعوم بعد</td>
-<td>يحلّل Inkling 2 الحقل <code>is_varloop</code> لكنه لا يستخدمه أبدًا
-(<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Configuration.swift"><code>Inkling2Configuration.swift</code></a>).
-ويكيّف <code>--experimental-adaptive-thinking-budget</code> (<a
-href="https://github.com/goodmai/basalt/issues/41">#41</a>) طول التفكير،
-لا العمق.</td>
+<td>مدعوم</td>
+<td><code>--experimental-loop-exit &lt;threshold&gt;</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LoopExit.swift"><code>LoopExit.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/issues/820">#820</a>): يستخدم
+Ouro بوابة الخروج المدرَّبة الخاصة به؛ ويستخدم Inkling 2 وHuginn خروجًا لا
+يحتاج إلى تدريب يعتمد على التغيّر النسبي في المتبقّي (residual) بين
+التمريرات. على Huginn-0125 تعطي العتبة 0.1 سرعة فك ترميز أعلى بمقدار
+2.3× مقابل زيادة في الحيرة (perplexity) بنسبة +1.9% (<a
+href="https://github.com/goodmai/basalt/pull/849">#849</a>).</td>
 </tr>
 <tr>
 <td>المحوّلات متغيرة العرض Hourglass، ومجموعات Matryoshka، وأمان
@@ -5557,15 +5565,18 @@ href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4ee
 <td>نماذج الانتشار اللغوية المنفصلة المقنَّعة (D3PM وSEDD وMDLM وLLaDA
 وDream وMercury)</td>
 <td>2021–2025; B.10</td>
-<td>جزئي</td>
-<td>نواة Fast-dLLM (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMCore.swift"><code>FastDLLMCore.swift</code></a>،
-<a href="https://github.com/goodmai/basalt/issues/574">#574</a>) لها
-اختبارات، لكن <code>--experimental-dllm</code> مرفوض لأنه غير موصول (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ExperimentalServeOptions.swift"><code>ExperimentalServeOptions.swift</code></a>).
-تسجّل النسخة المتفرعة <code>nemotron_labs_diffusion</code> (<a
-href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4eebb19fe28f8a/Libraries/MLXLLM/Models/NemotronLabsDiffusion.swift"><code>NemotronLabsDiffusion.swift</code></a>)،
-ولا يشغّل basalt إلا مسارها الانحداري الذاتي.</td>
+<td>مدعوم</td>
+<td>يعمل LLaDA-8B (<code>llada</code>، <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LLaDA/LLaDAModel.swift"><code>LLaDAModel.swift</code></a>)
+مع أوزان حقيقية تحت <code>--experimental-dllm</code> عبر مشغّل Fast-dLLM
+(<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMRunner.swift"><code>FastDLLMRunner.swift</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>، <a
+href="https://github.com/goodmai/basalt/pull/833">#833</a>) مع نواة
+انتباه مدمجة ثنائية الكتلة (<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>). أما Dream
+وMercury فغير مدعومين. ولا يُشغَّل <code>nemotron_labs_diffusion</code> من
+النسخة المتفرعة إلا على مساره الانحداري الذاتي.</td>
 </tr>
 <tr>
 <td>نماذج الانتشار اللغوية المكرَّرة (LoopMDM وLooped UDLM) وVAR على مستوى
@@ -5684,10 +5695,19 @@ href="https://github.com/goodmai/basalt/blob/main/Tests/BasaltTests/NemotronTran
 <td>Whisper والتعرف السريع على الكلام (Parakeet-TDT وCanary وSenseVoice
 وGigaAM وVoxtral Realtime)</td>
 <td>2022–2026</td>
-<td>غير مدعوم بعد</td>
-<td>لم يُعثر على أي دليل. يستخدم إدخال الكلام على الجهاز SpeechAnalyzer
-في macOS (<code>--speech-analyzer</code>، <a
-href="https://github.com/goodmai/basalt/issues/222">#222</a>).</td>
+<td>مدعوم</td>
+<td>يوجّه <code>/v1/audio/transcriptions</code> كلًّا من Whisper
+(<code>whisper</code>، <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Whisper/"><code>Speech/Whisper</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>)
+وParakeet-TDT (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Parakeet/"><code>Speech/Parakeet</code></a>،
+<a href="https://github.com/goodmai/basalt/pull/839">#839</a>) عبر
+<code>SpeechRecognitionModel</code>، وقد قيسا مع أوزان حقيقية في <a
+href="https://github.com/goodmai/basalt/issues/818">#818</a>. لا تزال
+مستودعات Whisper في mlx-community تحتاج إلى <code>tokenizer.json</code>
+(<a href="https://github.com/goodmai/basalt/issues/851">#851</a>). أما
+Canary وSenseVoice وGigaAM وVoxtral Realtime فغير مدعومة.</td>
 </tr>
 <tr>
 <td>مشفّرات الكلام ذاتية الإشراف (wav2vec 2.0 وHuBERT وWavLM)</td>
@@ -5987,7 +6007,7 @@ V4 Pro وKimi K3 وTencent Hy4</td>
 </tr>
 </tbody>
 </table>
-<p><strong>الإجمالي: 120 صفًا — مدعوم 51، جزئي 34، غير مدعوم بعد 31، خارج
+<p><strong>الإجمالي: 120 صفًا — مدعوم 54، جزئي 34، غير مدعوم بعد 28، خارج
 النطاق 4.</strong></p>
 <h2 id="المراجع"><strong>المراجع</strong></h2>
 <p>تضم الفهرس الببليوغرافي <strong>445 مصدرًا أوليًا مرقَّمًا فرديًا</strong>

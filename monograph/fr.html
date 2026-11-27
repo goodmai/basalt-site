@@ -5219,7 +5219,7 @@ monographie</strong></h2>
 <p>Cette annexe met en correspondance les types de modèles et les
 mécanismes que la monographie traite comme des jalons (surtout
 2012–2027, plus les fondations sur lesquelles repose basalt) avec basalt
-v0.13.0 à la date du 2026-11-26. Une ligne est <em>prise en charge</em>
+main à la date du 2026-11-27. Une ligne est <em>prise en charge</em>
 uniquement si un <code>model_type</code> enregistré, un drapeau accepté
 ou un point d'accès routé l'atteint avec de vrais poids. Les cœurs
 autonomes, les drapeaux refusés ou réservés à l'expérimental, et les
@@ -5757,20 +5757,28 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro et Parallel Loop Transformer (parallélisme
 inter-boucles)</td>
 <td>2025 ; B.9</td>
-<td>pas encore</td>
-<td>Inkling 2 est le seul type de modèle bouclé, et il n'y a pas de
-pipeline inter-boucles.</td>
+<td>partiel</td>
+<td>Huginn-0125 (<code>huginn_raven</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) et Ouro
+(<code>ouro</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) tournent
+avec de vrais poids. Il n'y a pas de pipeline inter-boucles (Parallel
+Loop Transformer).</td>
 </tr>
 <tr>
 <td>Arrêt adaptatif (ACT) et portes de sortie anticipée (Ouro)</td>
 <td>2016, 2025 ; B.9</td>
-<td>pas encore</td>
-<td>Inkling 2 analyse <code>is_varloop</code> mais ne l'utilise jamais
-(<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Configuration.swift"><code>Inkling2Configuration.swift</code></a>).
-<code>--experimental-adaptive-thinking-budget</code> (<a
-href="https://github.com/goodmai/basalt/issues/41">#41</a>) adapte la
-longueur de réflexion, pas la profondeur.</td>
+<td>pris en charge</td>
+<td><code>--experimental-loop-exit &lt;threshold&gt;</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LoopExit.swift"><code>LoopExit.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/issues/820">#820</a>) : Ouro
+utilise sa porte de sortie entraînée ; Inkling 2 et Huginn utilisent une
+sortie sans entraînement fondée sur la variation relative du résidu
+entre deux passes. Sur Huginn-0125, le seuil 0,1 donne une vitesse de
+décodage 2,3× plus élevée pour +1,9 % de perplexité (<a
+href="https://github.com/goodmai/basalt/pull/849">#849</a>).</td>
 </tr>
 <tr>
 <td>Transformers à largeur variable en sablier, suites Matryoshka,
@@ -6147,16 +6155,19 @@ n'est pas branché.</td>
 <td>LM à diffusion discrète masquée (D3PM, SEDD, MDLM, LLaDA, Dream,
 Mercury)</td>
 <td>2021–2025 ; B.10</td>
-<td>partiel</td>
-<td>Le cœur Fast-dLLM (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMCore.swift"><code>FastDLLMCore.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/574">#574</a>) a des
-tests, mais <code>--experimental-dllm</code> est refusé comme non
-branché (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ExperimentalServeOptions.swift"><code>ExperimentalServeOptions.swift</code></a>).
-Le fork enregistre <code>nemotron_labs_diffusion</code> (<a
-href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4eebb19fe28f8a/Libraries/MLXLLM/Models/NemotronLabsDiffusion.swift"><code>NemotronLabsDiffusion.swift</code></a>),
-et basalt ne pilote que son chemin autorégressif.</td>
+<td>pris en charge</td>
+<td>LLaDA-8B (<code>llada</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LLaDA/LLaDAModel.swift"><code>LLaDAModel.swift</code></a>)
+tourne avec de vrais poids sous <code>--experimental-dllm</code> via
+l'exécuteur Fast-dLLM (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMRunner.swift"><code>FastDLLMRunner.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>, <a
+href="https://github.com/goodmai/basalt/pull/833">#833</a>), avec un
+noyau d'attention double bloc fusionné (<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>). Dream et
+Mercury ne sont pas pris en charge. Le
+<code>nemotron_labs_diffusion</code> du fork n'est piloté que sur son
+chemin autorégressif.</td>
 </tr>
 <tr>
 <td>LM à diffusion bouclés (LoopMDM, Looped UDLM) et VAR par échelles
@@ -6276,10 +6287,20 @@ href="https://github.com/goodmai/basalt/blob/main/Tests/BasaltTests/NemotronTran
 <td>Whisper et ASR rapide (Parakeet-TDT, Canary, SenseVoice, GigaAM,
 Voxtral Realtime)</td>
 <td>2022–2026</td>
-<td>pas encore</td>
-<td>Aucune preuve trouvée. L'entrée vocale sur l'appareil utilise
-SpeechAnalyzer de macOS (<code>--speech-analyzer</code>, <a
-href="https://github.com/goodmai/basalt/issues/222">#222</a>).</td>
+<td>pris en charge</td>
+<td><code>/v1/audio/transcriptions</code> route Whisper
+(<code>whisper</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Whisper/"><code>Speech/Whisper</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) et
+Parakeet-TDT (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Parakeet/"><code>Speech/Parakeet</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/839">#839</a>) via
+<code>SpeechRecognitionModel</code>, mesurés avec de vrais poids dans <a
+href="https://github.com/goodmai/basalt/issues/818">#818</a>. Les dépôts
+Whisper de mlx-community ont encore besoin d'un
+<code>tokenizer.json</code> (<a
+href="https://github.com/goodmai/basalt/issues/851">#851</a>). Canary,
+SenseVoice, GigaAM et Voxtral Realtime ne sont pas pris en charge.</td>
 </tr>
 <tr>
 <td>Encodeurs de parole auto-supervisés (wav2vec 2.0, HuBERT,
@@ -6592,8 +6613,8 @@ existent séparément (bailing_hybrid, Inkling 2).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total : 120 lignes — pris en charge 51, partiel 34, pas
-encore 31, hors du champ 4.</strong></p>
+<p><strong>Total : 120 lignes — pris en charge 54, partiel 34, pas
+encore 28, hors du champ 4.</strong></p>
 <h2 id="bibliographie"><strong>Bibliographie</strong></h2>
 <p>Le répertoire bibliographique comprend <strong>445 sources primaires
 numérotées individuellement</strong> (publications scientifiques,

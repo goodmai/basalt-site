@@ -5009,7 +5009,7 @@ id="appendix-c-what-from-the-monograph-basalt-already-supports"><strong>Appendix
 C. What from the monograph basalt already supports</strong></h2>
 <p>This appendix maps the model types and mechanisms the monograph
 treats as milestones (mostly 2012–2027, plus the foundations basalt
-relies on) onto basalt v0.13.0 as of 2026-11-26. A row is
+relies on) onto basalt main as of 2026-11-27. A row is
 <em>supported</em> only when a registered <code>model_type</code>, an
 accepted flag or a routed endpoint reaches it with real weights.
 Standalone cores, refused or experimental-only flags, and modules that
@@ -5532,19 +5532,27 @@ href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models
 <td>Huginn-0125, Ouro and Parallel Loop Transformer (cross-loop
 parallelism)</td>
 <td>2025; B.9</td>
-<td>not yet</td>
-<td>Inkling 2 is the only looped model type, and there is no cross-loop
-pipelining.</td>
+<td>partial</td>
+<td>Huginn-0125 (<code>huginn_raven</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Huginn/HuginnModel.swift"><code>HuginnModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) and Ouro
+(<code>ouro</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Ouro/OuroModel.swift"><code>OuroModel.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>) run on
+real weights. There is no cross-loop pipelining (Parallel Loop
+Transformer).</td>
 </tr>
 <tr>
 <td>Adaptive halting (ACT) and early-exit gates (Ouro)</td>
 <td>2016, 2025; B.9</td>
-<td>not yet</td>
-<td>Inkling 2 parses <code>is_varloop</code> but never uses it (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/Inkling2/Inkling2Configuration.swift"><code>Inkling2Configuration.swift</code></a>).
-<code>--experimental-adaptive-thinking-budget</code> (<a
-href="https://github.com/goodmai/basalt/issues/41">#41</a>) adapts
-thinking length, not depth.</td>
+<td>supported</td>
+<td><code>--experimental-loop-exit &lt;threshold&gt;</code> (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LoopExit.swift"><code>LoopExit.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/issues/820">#820</a>): Ouro
+uses its trained exit gate; Inkling 2 and Huginn use a training-free
+exit on the relative change of the residual between passes. On
+Huginn-0125, threshold 0.1 gives 2.3× decode speed at +1.9% perplexity
+(<a href="https://github.com/goodmai/basalt/pull/849">#849</a>).</td>
 </tr>
 <tr>
 <td>Hourglass variable-width transformers, Matryoshka suites, SafeBridge
@@ -5909,15 +5917,19 @@ is not wired.</td>
 <td>Masked discrete diffusion LMs (D3PM, SEDD, MDLM, LLaDA, Dream,
 Mercury)</td>
 <td>2021–2025; B.10</td>
-<td>partial</td>
-<td>The Fast-dLLM core (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMCore.swift"><code>FastDLLMCore.swift</code></a>,
-<a href="https://github.com/goodmai/basalt/issues/574">#574</a>) has
-tests, but <code>--experimental-dllm</code> is refused as unwired (<a
-href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltCLI/ExperimentalServeOptions.swift"><code>ExperimentalServeOptions.swift</code></a>).
-The fork registers <code>nemotron_labs_diffusion</code> (<a
-href="https://github.com/goodmai/mlx-swift-lm/blob/8e76c2fb9322f9bccc2724fc7c4eebb19fe28f8a/Libraries/MLXLLM/Models/NemotronLabsDiffusion.swift"><code>NemotronLabsDiffusion.swift</code></a>),
-and basalt drives only its autoregressive path.</td>
+<td>supported</td>
+<td>LLaDA-8B (<code>llada</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Models/LLaDA/LLaDAModel.swift"><code>LLaDAModel.swift</code></a>)
+runs on real weights under <code>--experimental-dllm</code> through the
+Fast-dLLM runner (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/DiffusionLLM/FastDLLMRunner.swift"><code>FastDLLMRunner.swift</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/832">#832</a>, <a
+href="https://github.com/goodmai/basalt/pull/833">#833</a>) with a fused
+dual-block attention kernel (<a
+href="https://github.com/goodmai/basalt/pull/840">#840</a>). Dream and
+Mercury are not supported. The fork's
+<code>nemotron_labs_diffusion</code> is driven only on its
+autoregressive path.</td>
 </tr>
 <tr>
 <td>Looped diffusion LMs (LoopMDM, Looped UDLM) and scale-wise VAR as
@@ -6036,10 +6048,20 @@ href="https://github.com/goodmai/basalt/blob/main/Tests/BasaltTests/NemotronTran
 <td>Whisper and fast ASR (Parakeet-TDT, Canary, SenseVoice, GigaAM,
 Voxtral Realtime)</td>
 <td>2022–2026</td>
-<td>not yet</td>
-<td>No evidence found. On-device speech input uses macOS SpeechAnalyzer
-(<code>--speech-analyzer</code>, <a
-href="https://github.com/goodmai/basalt/issues/222">#222</a>).</td>
+<td>supported</td>
+<td><code>/v1/audio/transcriptions</code> routes Whisper
+(<code>whisper</code>, <a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Whisper/"><code>Speech/Whisper</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/838">#838</a>) and
+Parakeet-TDT (<a
+href="https://github.com/goodmai/basalt/blob/main/Sources/BasaltInference/Speech/Parakeet/"><code>Speech/Parakeet</code></a>,
+<a href="https://github.com/goodmai/basalt/pull/839">#839</a>) through
+<code>SpeechRecognitionModel</code>, measured on real weights in <a
+href="https://github.com/goodmai/basalt/issues/818">#818</a>.
+mlx-community Whisper repositories still need a
+<code>tokenizer.json</code> (<a
+href="https://github.com/goodmai/basalt/issues/851">#851</a>). Canary,
+SenseVoice, GigaAM and Voxtral Realtime are not supported.</td>
 </tr>
 <tr>
 <td>Self-supervised speech encoders (wav2vec 2.0, HuBERT, WavLM)</td>
@@ -6342,7 +6364,7 @@ separately (bailing_hybrid, Inkling 2).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total: 120 rows — supported 51, partial 34, not yet 31, out
+<p><strong>Total: 120 rows — supported 54, partial 34, not yet 28, out
 of scope 4.</strong></p>
 <h2 id="bibliography"><strong>Bibliography</strong></h2>
 <p>The bibliography includes <strong>445 individually numbered primary
